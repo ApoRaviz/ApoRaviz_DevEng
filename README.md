@@ -1,6 +1,7 @@
 # ApoRavizDevEng
 Learning project for ApoRaviz DevEng.
 Git conflict practice starts from the main branch version.
+Git conflict practice also includes the feature branch version.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
 
