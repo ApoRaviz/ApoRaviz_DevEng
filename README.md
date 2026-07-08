@@ -1,5 +1,6 @@
 # ApoRavizDevEng
 Learning project for ApoRaviz DevEng.
+Git branching practice lives on a separate branch before merging.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
 
