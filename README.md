@@ -1,6 +1,7 @@
 # ApoRavizDevEng
 Learning project for ApoRaviz DevEng.
 Git practice uses clear commit messages.
+Daily Git workflow checks local and remote sync before pushing.
 Git conflict practice starts from the main branch version.
 Git conflict practice also includes the feature branch version.
 
