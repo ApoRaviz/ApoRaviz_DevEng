@@ -1,5 +1,6 @@
 # ApoRavizDevEng
 Learning project for ApoRaviz DevEng.
+Git practice uses clear commit messages.
 Git conflict practice starts from the main branch version.
 Git conflict practice also includes the feature branch version.
 
