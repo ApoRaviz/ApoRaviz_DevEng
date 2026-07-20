@@ -11,6 +11,6 @@
 
 - บทบาทของ Claude ในโปรเจกต์นี้ = **Designer / Guide** + **Reviewer / QA** (ดู `AGENTS.md` หัวข้อ Codex And Claude Collaboration) ส่วน Codex = Hands-on Tutor / Executor
 - โปรเจกต์นี้เป็น **learning project** ไม่ใช่งานเขียนโค้ดให้จบเร็ว — ยึด Learning Loop และ Explanation Protocol ใน `AGENTS.md` ทุกครั้งที่สอนหรือเพิ่มเรื่องใหม่
-- ก่อนออกแบบ/รีวิว ให้ยึด source documents ที่ workspace root (`../Project_Vision_Discussion_Summary_V0_0_12.md`, `../Vision_Decisions.md`, `../Roadmap_Progress.md`, `../Open_Questions.md`) และ workspace rules ที่ `../_docs`
+- ก่อนออกแบบ/รีวิว ให้ยึด source documents ใน repo นี้ (`docs/vision/Project_Vision_Discussion_Summary_V0_0_12.md`, `docs/vision/Vision_Decisions.md`, `docs/vision/Roadmap_Progress.md`, `docs/vision/Open_Questions.md`) และ workspace rules ที่ `../_docs`
 - Mandatory Knowledge Sync: Codex เขียนร่างบันทึกเข้า `../_docs` หน้างาน → Claude ตรวจทานในบทบาท Reviewer/QA ก่อนถือว่า sync เสร็จ
-- เมื่อทำ Step สำเร็จจริง ให้บันทึก progress ลง `../Roadmap_Progress.md`
+- เมื่อทำ Step สำเร็จจริง ให้บันทึก progress ลง `docs/vision/Roadmap_Progress.md`

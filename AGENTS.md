@@ -18,10 +18,10 @@ learning
 
 ถ้างานเกี่ยวกับ product direction, roadmap, หรือ learning protocol ให้อ่านเอกสารเหล่านี้ประกอบ:
 
-- `../Project_Vision_Discussion_Summary_V0_0_12.md` = master context ฉบับเต็มล่าสุด
-- `../Vision_Decisions.md` = decisions ที่ lock แล้ว
-- `../Roadmap_Progress.md` = phase breakdown และ progress log ล่าสุด
-- `../Open_Questions.md` = คำถามค้างและเรื่อง deferred
+- `docs/vision/Project_Vision_Discussion_Summary_V0_0_12.md` = master context ฉบับเต็มล่าสุด
+- `docs/vision/Vision_Decisions.md` = decisions ที่ lock แล้ว
+- `docs/vision/Roadmap_Progress.md` = phase breakdown และ progress log ล่าสุด
+- `docs/vision/Open_Questions.md` = คำถามค้างและเรื่อง deferred
 
 ถ้าเอกสารขัดกัน ให้ยึด `Project_Vision_Discussion_Summary_V0_0_12.md` ก่อน เพราะเป็นฉบับใหม่สุดและรวม correction ล่าสุด เช่น role division, knowledge sync, และ testing wording
 
@@ -43,7 +43,8 @@ learning
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 เริ่มแล้ว และ Step 0.1.1-0.1.2 ผ่าน Learning Loop ตาม `../Roadmap_Progress.md`
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.0.2 ตาม `docs/vision/Roadmap_Progress.md`
+- Step ถัดไปคือ 1.0.3 Sequence Diagram
 
 ## Product Direction
 
@@ -182,7 +183,7 @@ Mandatory Knowledge Sync:
 2. อ่าน `README.md`
 3. อ่าน source documents ที่เกี่ยวกับงานนั้น
 4. ดู `package.json`, `angular.json`, และไฟล์ที่เกี่ยวข้องกับงาน
-5. เช็ก task ปัจจุบันเทียบกับ `../Roadmap_Progress.md`
+5. เช็ก task ปัจจุบันเทียบกับ `docs/vision/Roadmap_Progress.md`
 6. เช็กว่า task นี้ต้องอัปเดต `../_docs` ด้วยไหม
 
 ขณะทำงาน:
@@ -262,8 +263,8 @@ npm test -- --watch=false
 - มี command ใหม่ไหม
 - มี bug pattern หรือ SSR/security pattern ที่จะเจอซ้ำไหม
 - มี flow ที่ควรกลายเป็น lesson/lab/concept ใน `../_docs` ไหม
-- มี progress ที่ควรเพิ่มใน `../Roadmap_Progress.md` ไหม
-- มี decision หรือ deferred item ที่ควรอัปเดตใน `../Vision_Decisions.md` หรือ `../Open_Questions.md` ไหม
+- มี progress ที่ควรเพิ่มใน `docs/vision/Roadmap_Progress.md` ไหม
+- มี decision หรือ deferred item ที่ควรอัปเดตใน `docs/vision/Vision_Decisions.md` หรือ `docs/vision/Open_Questions.md` ไหม
 - มีรายละเอียดเฉพาะโปรเจกต์ที่ควรเพิ่มใน `README.md` หรือ `docs/` ไหม
 
 ถ้าไม่มี docs update ให้บอกเหตุผลสั้น ๆ ตอนสรุปงาน
