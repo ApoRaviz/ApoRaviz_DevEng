@@ -349,5 +349,5 @@ users 1 ── many invite_tokens used
 - `expires_at` ต้อง validate ว่าเป็น future time ใน API/service layer ตอนสร้าง token; ห้ามพยายามใช้ `CHECK (expires_at > now())` ใน PostgreSQL เพราะ `now()` ไม่ใช่ immutable function สำหรับ check constraint
 - First admin bootstrap ต้องมาจาก seed/migration หรือ controlled setup flow เพราะ register ปกติสร้าง `role = 'user'` เสมอ แต่ `POST /invite-tokens` ต้องใช้ admin และ `invite_tokens.created_by_admin_id` เป็น `NOT NULL`
 - Password hashing จะเรียนและ implement ใน Phase 1.6.3; schema ใช้ `password_hash` ตั้งแต่ตอนนี้เพื่อไม่เปิดทางเก็บ password ดิบ
-- ยกไป Step 1.0.3 Sequence Diagram: การันตี "1 token ใช้ได้ 1 คน" ต้องใช้ atomic conditional update ตอน mark token used เช่น `UPDATE invite_tokens SET used_at = now(), used_by_user_id = :user_id WHERE id = :id AND used_at IS NULL RETURNING id`; ถ้าไม่มี row กลับมาต้อง reject ทั้ง transaction เพราะ schema/check constraint อย่างเดียวกัน race condition ตอน register พร้อมกันไม่ได้
+- ✅ ปิดใน Step 1.0.3: การันตี "1 token ใช้ได้ 1 คน" ด้วย atomic conditional update ตอน mark token used; ถ้าไม่มี row กลับมาต้อง rollback ทั้ง transaction ดู flow และ concurrency guarantee ที่ [Sequence Diagrams](sequence-diagram.md#register-concurrency-guarantee)
 - Index แบบลึก เช่น B-Tree, composite index cost, และ `EXPLAIN ANALYZE` จะเรียนละเอียดใน Step 1.3.8
