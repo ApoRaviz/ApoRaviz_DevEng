@@ -354,6 +354,8 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 | 1.6.6 | Refresh Token Rotation คืออะไร |
 | 1.6.7 | RBAC คืออะไร กำหนด role/permission เบื้องต้น — **ใช้จริงกับ endpoint สร้าง Invite Token ที่ต้องเช็คสิทธิ์ admin (ข้อ 8.4)** |
 | 1.6.8 | Brute-force protection คืออะไร — concept การจำกัดจำนวนครั้ง login ผิด (implement เต็มรอ Rate limiting ใน Phase 3 แต่ต้องเข้าใจ concept ตั้งแต่ตอนนี้) |
+| 1.6.9 | Frontend Auth Forms & State — สร้าง Login/Register form, validation, แยก form state, ใช้ Angular signal คุม auth mode และ class binding โดยยึด JWT storage decision จาก 1.6.2 |
+| 1.6.10 | Sliding Auth Panel & Accessible Motion — ฝึก CSS transform/transition, ป้องกันการสลับซ้ำระหว่าง animation, focus management, responsive fallback และ `prefers-reduced-motion` |
 
 **1.7 Stub AI Endpoint**
 | Step | หัวข้อ |
@@ -368,7 +370,7 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 | 1.8.1 | Reverse Proxy คืออะไร (Nginx/Caddy) |
 | 1.8.2 | Deploy flow หน้าตาเป็นยังไง (build → push → run บน VPS) |
 
-> รวม Phase 1 ทั้งหมดมีประมาณ 38 รอบ Learning Loop ย่อย
+> รวม Phase 1 ทั้งหมดมีประมาณ 40 รอบ Learning Loop ย่อย
 
 ### 7.4 Phase 2 Guardrail ก่อนเสียบ AI จริง — เพิ่มใน V0.0.10
 
