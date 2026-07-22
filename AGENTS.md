@@ -37,14 +37,14 @@ learning
 
 สถานะปัจจุบัน:
 
-- Angular 22 application
+- Angular 22 application ที่ root + NestJS 11 backend ใน `backend/` (Git repo เดียว, package.json แยกกัน)
 - standalone component style
 - Angular Router พร้อม SSR/server rendering scaffold
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.0.4 ตาม `docs/vision/Roadmap_Progress.md`
-- Step ถัดไปคือ 1.1.1 Nest CLI
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.1 ตาม `docs/vision/Roadmap_Progress.md`
+- Step ถัดไปคือ 1.1.2 Module
 
 ## Product Direction
 

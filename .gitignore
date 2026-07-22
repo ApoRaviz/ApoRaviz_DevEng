@@ -16,6 +16,11 @@ yarn-error.log
 yarn-error.log*
 /yarn.lock
 
+# NestJS backend
+/backend/node_modules
+/backend/dist
+/backend/coverage
+
 # Environment files
 /.env
 

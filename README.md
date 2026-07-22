@@ -7,7 +7,20 @@ Git conflict practice also includes the feature branch version.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
 
-## Development server
+## Project structure
+
+```text
+ApoRaviz_DevEng/
+├─ src/       Angular frontend
+└─ backend/   NestJS backend
+```
+
+Frontend และ backend อยู่ใน Git repository เดียวกัน แต่แยก `package.json`,
+dependencies และคำสั่ง build/test ออกจากกัน
+
+ใช้ Node.js ตาม `.nvmrc` ก่อนติดตั้ง dependencies หรือรันโปรเจกต์
+
+## Frontend development server
 
 To start a local development server, run:
 
@@ -16,6 +29,28 @@ ng serve
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Backend development server
+
+ติดตั้ง dependencies และเปิด NestJS development server จากโฟลเดอร์ `backend`:
+
+```bash
+cd backend
+npm install
+npm run start:dev
+```
+
+Backend เริ่มต้นที่ `http://localhost:3000/` และจะ compile/restart อัตโนมัติเมื่อ source code เปลี่ยน
+
+คำสั่งตรวจ backend:
+
+```bash
+cd backend
+npm run lint
+npm run build
+npm test -- --runInBand
+npm run test:e2e
+```
 
 ## Code scaffolding
 
