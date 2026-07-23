@@ -43,8 +43,8 @@ learning
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.1 ตาม `docs/vision/Roadmap_Progress.md`
-- Step ถัดไปคือ 1.1.2 Module
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.2 ตาม `docs/vision/Roadmap_Progress.md`
+- Step ถัดไปคือ 1.1.3 Controller
 
 ## Product Direction
 
