@@ -300,6 +300,7 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 | 1.1.6 | Exception Filter คืออะไร — ทำไม error ดิบๆ (stack trace) ที่หลุดออกไปหา frontend คือ security leak, สร้าง Global Exception Filter แรก |
 | 1.1.7 | Unit Test คืออะไร — เขียน unit test แรกให้ Service ด้วย Jest ตั้งแต่ skeleton ยังเล็ก (ฝึกนิสัยก่อนโค้ดจะเยอะ) |
 | 1.1.8 | Backend E2E Test คืออะไร — ใช้ Jest + Supertest เรียก Nest application ผ่าน HTTP, เข้าใจ `test/` และ `jest-e2e.json`, และแยกจาก Unit Test กับ Playwright full E2E |
+| 1.1.9 | ASP.NET Core Bridge Lab — แยก C#, .NET และ ASP.NET Core; ตรวจ .NET SDK/ใช้ `dotnet` CLI; สร้าง controller-based Web API project; อ่าน File Map (`.csproj`, `Program.cs`, `appsettings*.json`, `Properties/launchSettings.json`, `Controllers/`, `bin/`, `obj/`); ทดลอง `dotnet run/build/test` — เป็น lab แยกเพื่อเทียบพื้นฐานกับ NestJS ไม่เปลี่ยน backend หลักของ DevEng และยังไม่ต่อ DB/Auth |
 
 **1.2 Frontend คุยกับ Backend**
 | Step | หัวข้อ |
@@ -371,7 +372,7 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 | 1.8.1 | Reverse Proxy คืออะไร (Nginx/Caddy) |
 | 1.8.2 | Deploy flow หน้าตาเป็นยังไง (build → push → run บน VPS) |
 
-> รวม Phase 1 ทั้งหมดมีประมาณ 41 รอบ Learning Loop ย่อย
+> รวม Phase 1 ทั้งหมดมีประมาณ 42 รอบ Learning Loop ย่อย
 
 ### 7.4 Phase 2 Guardrail ก่อนเสียบ AI จริง — เพิ่มใน V0.0.10
 
