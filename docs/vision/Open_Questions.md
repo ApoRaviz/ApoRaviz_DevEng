@@ -30,7 +30,7 @@
 
 ## #26 รายละเอียด — Private Planning Repo (brief สำหรับ Codex)
 
-**ปัญหา:** planning docs (`Vision_Decisions.md`, `Roadmap_Progress.md`, `Open_Questions.md`, `Project_Vision_Discussion_Summary_V0_0_12.md`) ตอนนี้ลอยที่ workspace root แบบ **non-git** = ไม่ backup, เปลี่ยนเครื่องหาย และ 2 ไฟล์มี **personal context** (การเงิน/สุขภาพภรรยา) จึงเข้า public repo (`_docs`, DevEng) ไม่ได้
+**ปัญหา:** planning docs (`Vision_Decisions.md`, `Roadmap_Progress.md`, `Open_Questions.md`, `Project_Vision_Discussion_Summary_V0_0_12.md`) ตอนนี้ลอยที่ workspace root แบบ **non-git** = ไม่ backup, เปลี่ยนเครื่องหาย และ 2 ไฟล์มี **personal context** (การเงิน/สุขภาพภรรยา) จึงเข้า public repo (`ApoRaviz_Workspace_Docs`, DevEng) ไม่ได้
 
 **ทางแก้:** private repo เดียว รวม planning ของ**ทุกโปรเจกต์** แบ่ง subfolder ต่อโปรเจกต์ — model = N public code repo + **1** private planning repo (ไม่โตตามจำนวนโปรเจกต์)
 
@@ -49,18 +49,18 @@ ApoRaviz_Plan   (private ตลอดไป / ไม่มี code / ชื่�
 
 | จุด | ไฟล์ / section | ทำอะไร |
 |---|---|---|
-| 1 | `_docs/WORKSPACE_PLAN.md` → Project Registry | เพิ่มแถว `ApoRaviz_Plan` (private / planning+personal ทุกโปรเจกต์) — single-source ของทะเบียน repo |
-| 2 | `_docs/WORKSPACE_RULES.md` → North Star | ยก rule เป็น canonical: "personal context + planning → private planning repo เท่านั้น ห้ามเข้า public repo ใด ๆ" |
-| 3 | `_docs/AI_UPDATE_RULE.md` → Source Of Truth + Decision Table | เพิ่ม route: "planning/vision/roadmap/personal → `ApoRaviz_Plan/<project>/` (private) ไม่ใช่ `_docs`" |
-| 4 | `_docs/NEW_PROJECT_GUIDE.md` + `PROJECT_START_HERE.md` checklist | เพิ่ม step: โปรเจกต์ใหม่ที่มี planning/personal → สร้างโฟลเดอร์ `ApoRaviz_Plan/<project>/` (ไม่สร้าง repo ใหม่) |
-| 5 | `ApoRaviz_DevEng/AGENTS.md` (บรรทัด ~21-24, 185, 266) + `CLAUDE.md` (~14, 16) | update path: `../<file>` → `../ApoRaviz_Plan/deveng/<file>` (`../_docs` ไม่ต้องแตะ) |
+| 1 | `ApoRaviz_Workspace_Docs/WORKSPACE_PLAN.md` → Project Registry | เพิ่มแถว `ApoRaviz_Plan` (private / planning+personal ทุกโปรเจกต์) — single-source ของทะเบียน repo |
+| 2 | `ApoRaviz_Workspace_Docs/WORKSPACE_RULES.md` → North Star | ยก rule เป็น canonical: "personal context + planning → private planning repo เท่านั้น ห้ามเข้า public repo ใด ๆ" |
+| 3 | `ApoRaviz_Workspace_Docs/AI_UPDATE_RULE.md` → Source Of Truth + Decision Table | เพิ่ม route: "planning/vision/roadmap/personal → `ApoRaviz_Plan/<project>/` (private) ไม่ใช่ `ApoRaviz_Workspace_Docs`" |
+| 4 | `ApoRaviz_Workspace_Docs/NEW_PROJECT_GUIDE.md` + `PROJECT_START_HERE.md` checklist | เพิ่ม step: โปรเจกต์ใหม่ที่มี planning/personal → สร้างโฟลเดอร์ `ApoRaviz_Plan/<project>/` (ไม่สร้าง repo ใหม่) |
+| 5 | `ApoRaviz_DevEng/AGENTS.md` (บรรทัด ~21-24, 185, 266) + `CLAUDE.md` (~14, 16) | update path: `../<file>` → `../ApoRaviz_Plan/deveng/<file>` (`../ApoRaviz_Workspace_Docs` ไม่ต้องแตะ) |
 | 6 | ย้ายไฟล์จริง | 4 ไฟล์ root → `ApoRaviz_Plan/deveng/` แล้ว `git init` → commit → add remote (private) → push |
 
 **Guardrails:**
 
-- `ApoRaviz_Plan` = private ตลอดไป; แถว/rule ที่ลงใน `_docs` (public) เขียนแค่ **role** ห้าม copy personal content
+- `ApoRaviz_Plan` = private ตลอดไป; แถว/rule ที่ลงใน `ApoRaviz_Workspace_Docs` (public) เขียนแค่ **role** ห้าม copy personal content
 - path ใช้ relative เท่านั้น (`../ApoRaviz_Plan/...`) ไม่ hardcode path เต็มเครื่อง (machine-agnostic)
 - canonical ทะเบียน repo = `WORKSPACE_PLAN.md` Registry — role-list อื่น (WORKSPACE_RULES/PROJECT_START_HERE) ถ้าใส่ด้วยต้อง sync ให้ตรง อย่า drift
 - ระหว่างรอ Step 0.4: backup 4 ไฟล์ขึ้น cloud drive กันเครื่องพัง
 
-**เสร็จแล้ว:** ส่ง Claude review ตามกติกา 2.4 (diff + docs build ถ้าแตะ `_docs`)
+**เสร็จแล้ว:** ส่ง Claude review ตามกติกา 2.4 (diff + docs build ถ้าแตะ `ApoRaviz_Workspace_Docs`)

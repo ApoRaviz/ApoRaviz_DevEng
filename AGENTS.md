@@ -6,13 +6,13 @@
 
 เป้าหมายของไฟล์นี้ไม่ใช่แทนที่เอกสาร vision ทั้งหมด แต่เป็น context ฉุกเฉินขั้นต่ำเมื่อ agent เข้ามาทำงานแล้วต้องรู้ทันทีว่าโปรเจกต์นี้กำลังสร้างอะไร เพื่ออะไร และต้องสอน/ทำงานด้วยมาตรฐานแบบไหน
 
-## Project Mode
+## Default Working Mode
 
 ```text
-learning
+teach
 ```
 
-โปรเจกต์นี้เป็น **learning project** — เน้นเรียนให้เข้าใจทุกบรรทัด ใช้ Learning Loop + Explanation Protocol และ capture ความรู้ reusable กลับ `../_docs` (ซึมเข้าหน้า topic ที่เกี่ยวข้อง) อย่างจริงจัง
+โปรเจกต์นี้ใช้ `teach` เป็นค่าเริ่มต้น — AI สอนระหว่างสร้าง เน้นเรียนให้เข้าใจทุกบรรทัด ใช้ Learning Loop + Explanation Protocol และ capture ความรู้ reusable กลับ `../ApoRaviz_Workspace_Docs` (ซึมเข้าหน้า topic ที่เกี่ยวข้อง) อย่างจริงจัง
 
 ## Source Documents
 
@@ -43,8 +43,9 @@ learning
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.5 ตาม `docs/vision/Roadmap_Progress.md`
-- Step ถัดไปคือ 1.1.6 Exception Filter
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.6 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.6 (NestJS Exception Filter) ผ่าน Learning Loop และ Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
+- backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนใน `backend/src/main.ts` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
+- Step ถัดไปคือ 1.1.7 Unit Test
 
 ## Product Direction
 
@@ -142,25 +143,28 @@ Design-first principle:
 
 ยึดกฎกลางจาก:
 
-- `../_docs/WORKSPACE_RULES.md`
-- `../_docs/AI_UPDATE_RULE.md`
-- `../_docs/TEACHING_RULES.md`
-- `../_docs/PROJECT_START_HERE.md`
-- `../_docs/NEW_PROJECT_GUIDE.md`
-- `../_docs/baseline.md` = version baseline (Node/Angular/Tailwind/TS)
+- `../ApoRaviz_Workspace_Docs/WORKSPACE_RULES.md`
+- `../ApoRaviz_Workspace_Docs/AI_UPDATE_RULE.md`
+- `../ApoRaviz_Workspace_Docs/TEACHING_RULES.md`
+- `../ApoRaviz_Workspace_Docs/PROJECT_START_HERE.md`
+- `../ApoRaviz_Workspace_Docs/NEW_PROJECT_GUIDE.md`
+- `../ApoRaviz_Workspace_Docs/baseline.md` = version baseline (Node/Angular/Tailwind/TS)
 
 หลักสำคัญ:
 
-- `../_docs` = ความรู้กลางจัด**ตาม topic** (W3Schools ของ ApoRaviz) — ความรู้ reusable ให้ซึมเข้าหน้า topic ที่เกี่ยวข้องเป็นตัวอย่าง ไม่ทำ case study แยกตามโปรเจกต์ (route `projects/<name>/` ยกเลิกแล้ว)
+- `../ApoRaviz_Workspace_Docs` = ความรู้กลางจัด**ตาม topic** (W3Schools ของ ApoRaviz) — ความรู้ reusable ให้ซึมเข้าหน้า topic ที่เกี่ยวข้องเป็นตัวอย่าง ไม่ทำ case study แยกตามโปรเจกต์ (route `projects/<name>/` ยกเลิกแล้ว)
 - รายละเอียดเฉพาะโปรเจกต์นี้ให้อยู่ใน repo นี้
 - อย่าปล่อยความรู้ใหม่ไว้แค่ใน chat
 
 Mandatory Knowledge Sync:
 
-1. Codex เขียนร่างบันทึกเข้า `../_docs` ตอนความเข้าใจเกิดขึ้นจริงหน้างาน
-2. Claude ตรวจทานบันทึกนั้นในบทบาท Reviewer/QA ก่อนถือว่า sync เสร็จ
+1. Codex เขียนร่าง code/docs และ Knowledge Sync หน้างาน
+2. Claude ทำ Independent Review/QA โดยอ่าน changed files และไฟล์ที่เกี่ยวข้องโดยตรง
+3. ถ้า PASS ให้ Claude stamp สถานะใน `AGENTS.md` และ `docs/vision/Roadmap_Progress.md`
+4. Claude ห้าม commit/push
+5. Codex ตรวจ scope แล้ว commit/push ทั้ง `ApoRaviz_DevEng` และ `ApoRaviz_Workspace_Docs`
 
-ตัวอย่างที่ควรกลับไป `../_docs`:
+ตัวอย่างที่ควรกลับไป `../ApoRaviz_Workspace_Docs`:
 
 - Angular SSR, hydration, router, signals, forms, testing, build config
 - Node.js command หรือ version issue
@@ -184,14 +188,14 @@ Mandatory Knowledge Sync:
 3. อ่าน source documents ที่เกี่ยวกับงานนั้น
 4. ดู `package.json`, `angular.json`, และไฟล์ที่เกี่ยวข้องกับงาน
 5. เช็ก task ปัจจุบันเทียบกับ `docs/vision/Roadmap_Progress.md`
-6. เช็กว่า task นี้ต้องอัปเดต `../_docs` ด้วยไหม
+6. เช็กว่า task นี้ต้องอัปเดต `../ApoRaviz_Workspace_Docs` ด้วยไหม
 
 ขณะทำงาน:
 
 - ใช้ pattern ของ Angular standalone components
 - ใช้ signals เมื่อเหมาะกับ local component state
 - ระวัง SSR: อย่าเรียก `window`, `document`, `localStorage`, หรือ browser-only API โดยตรงใน code ที่อาจรันฝั่ง server
-- ถ้าต้องใช้ browser API ให้ guard ด้วย platform/browser-safe pattern แล้วจดความรู้ที่ใช้ซ้ำได้กลับไป `../_docs`
+- ถ้าต้องใช้ browser API ให้ guard ด้วย platform/browser-safe pattern แล้วจดความรู้ที่ใช้ซ้ำได้กลับไป `../ApoRaviz_Workspace_Docs`
 - ใช้ Tailwind CSS ล้วนเมื่อถึงขั้น styling; อย่าเพิ่ม component library โดยไม่มี decision ใหม่
 - แก้เฉพาะไฟล์ที่เกี่ยวข้องกับ task
 - อย่าแก้ `node_modules`, `dist`, หรือ generated output
@@ -220,7 +224,7 @@ Mandatory Knowledge Sync:
 
 ## Commands
 
-ใช้ Node ตาม `../_docs/baseline.md` (เลขใน `.nvmrc` ของ repo)
+ใช้ Node ตาม `../ApoRaviz_Workspace_Docs/baseline.md` (เลขใน `.nvmrc` ของ repo)
 
 คำสั่งที่ควรใช้จาก root ของ repo นี้:
 
@@ -231,7 +235,7 @@ npm run build
 npm test -- --watch=false
 ```
 
-อย่า hardcode path เต็มของ Node เพราะ PC กับ Mac path ต่างกัน — `.nvmrc` + `../_docs/baseline.md` คือความจริงเดียว
+อย่า hardcode path เต็มของ Node เพราะ PC กับ Mac path ต่างกัน — `.nvmrc` + `../ApoRaviz_Workspace_Docs/baseline.md` คือความจริงเดียว
 
 เมื่อแก้ code ที่กระทบ runtime ให้พยายามรัน build/test ที่เกี่ยวข้องก่อนส่งต่อ
 
@@ -251,9 +255,9 @@ npm test -- --watch=false
 - Agent ถัดไปต้องอ่าน diff ล่าสุดก่อนแก้ต่อ
 - ถ้าไม่เห็นด้วยกับแนวทางเดิม ให้เพิ่ม note หรือแก้ให้ชัดเจน แต่อย่าลบทิ้งแบบไม่อธิบาย
 - ถ้าแก้ไฟล์นี้ ให้เก็บเป็นกติกาที่ใช้ซ้ำจริง ไม่ใช่บันทึก chat เฉพาะครั้ง
-- ถ้ามี decision สำคัญ ให้ย้ายไป `README.md`, `docs/`, source documents, หรือ `../_docs` ตามขอบเขตของเนื้อหา
+- ถ้ามี decision สำคัญ ให้ย้ายไป `README.md`, `docs/`, source documents, หรือ `../ApoRaviz_Workspace_Docs` ตามขอบเขตของเนื้อหา
 
-ทั้งสองตัวควรยึด source of truth เดียวกันจากไฟล์นี้, source documents, และ `../_docs`
+ทั้งสองตัวควรยึด source of truth เดียวกันจากไฟล์นี้, source documents, และ `../ApoRaviz_Workspace_Docs`
 
 ## Documentation Updates
 
@@ -262,7 +266,7 @@ npm test -- --watch=false
 - มีศัพท์ใหม่ไหม
 - มี command ใหม่ไหม
 - มี bug pattern หรือ SSR/security pattern ที่จะเจอซ้ำไหม
-- มี flow ที่ควรกลายเป็น lesson/lab/concept ใน `../_docs` ไหม
+- มี flow ที่ควรกลายเป็น lesson/lab/concept ใน `../ApoRaviz_Workspace_Docs` ไหม
 - มี progress ที่ควรเพิ่มใน `docs/vision/Roadmap_Progress.md` ไหม
 - มี decision หรือ deferred item ที่ควรอัปเดตใน `docs/vision/Vision_Decisions.md` หรือ `docs/vision/Open_Questions.md` ไหม
 - มีรายละเอียดเฉพาะโปรเจกต์ที่ควรเพิ่มใน `README.md` หรือ `docs/` ไหม

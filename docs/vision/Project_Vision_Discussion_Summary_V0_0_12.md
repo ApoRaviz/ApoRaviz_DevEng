@@ -64,7 +64,7 @@
 #### AI Context Files
 
 - **`AGENTS.md`** — กติกาสอน/ทำงานสำหรับ Codex (อ่านอัตโนมัติทุก session เมื่อวางที่ repo root) และ Claude Code (อ่านผ่าน `@import` ใน `CLAUDE.md`) ทำหน้าที่เป็น context ฉุกเฉินขั้นต่ำเมื่อ token ในแชทหมดกะทันหัน
-- **`CLAUDE.md`** — ไฟล์บางๆ สำหรับ Claude Code ใช้ `@AGENTS.md` เพื่อให้แก้ที่เดียวทั้งคู่เห็นเหมือนกัน — **ร่างเสร็จแล้ว** มีเฉพาะ Claude-specific notes (บทบาท Designer/Reviewer, path source docs/`_docs`, Knowledge Sync) ส่วนกติกาหลัก import จาก `AGENTS.md`
+- **`CLAUDE.md`** — ไฟล์บางๆ สำหรับ Claude Code ใช้ `@AGENTS.md` เพื่อให้แก้ที่เดียวทั้งคู่เห็นเหมือนกัน — **ร่างเสร็จแล้ว** มีเฉพาะ Claude-specific notes (บทบาท Designer/Reviewer, path source docs/`ApoRaviz_Workspace_Docs`, Knowledge Sync) ส่วนกติกาหลัก import จาก `AGENTS.md`
 
 ---
 

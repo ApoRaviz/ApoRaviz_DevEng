@@ -3,7 +3,7 @@
 > แยกออกมาจาก Project Vision & Learning Protocol — Discussion Summary (เดิม V0.0.8)
 > เก็บเฉพาะส่วนที่ **LOCK แล้วและแทบไม่เปลี่ยนอีก** — บริบทชีวิต, หลักการ, Tech Stack, Architecture, Product Brief
 > ไฟล์พี่น้อง: `Roadmap_Progress.md` (Phase breakdown, อัปเดตบ่อยที่สุด), `Open_Questions.md` (สถานะคำถามค้าง)
-> อัปเดตล่าสุด: 20 มิถุนายน 2026 (พร้อมกับ Discussion Summary V0.0.9)
+> อัปเดตล่าสุด: 27 กรกฎาคม 2026
 
 ---
 
@@ -44,7 +44,16 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 ก่อนพูดถึงเทอม B ต้องนิยามเทอม A ที่ B ยืนอยู่บนนั้นก่อนเสมอ — เริ่มจากภาพจำ/analogy ง่ายๆ ก่อนใส่ technical term
 
 ### 2.4 Mandatory Knowledge Sync
-ระหว่าง Learning Loop ถ้า AI ประเมินว่าเนื้อหาควรค่าแก่การจดจำ → AI เขียนเข้า ApoRaviz_Workspace_Docs ให้เองโดยตรง (ต้องทำผ่าน Claude Code ที่มีสิทธิ์เข้าถึงไฟล์ระบบ)
+
+ระหว่าง Learning Loop ถ้ามีความรู้ใหม่ที่ reusable และยังไม่มีใน `ApoRaviz_Workspace_Docs` ให้ทำตาม flow นี้:
+
+1. Codex เขียนร่าง code/docs และ Knowledge Sync หน้างาน
+2. Claude ทำ Independent Review/QA โดยอ่าน changed files และไฟล์ที่เกี่ยวข้องโดยตรง
+3. ถ้า PASS ให้ Claude stamp สถานะใน `AGENTS.md` และ `docs/vision/Roadmap_Progress.md`
+4. Claude ห้าม commit/push
+5. Codex ตรวจ scope แล้ว commit/push ทั้ง `ApoRaviz_DevEng` และ `ApoRaviz_Workspace_Docs`
+
+Workspace Docs เก็บเฉพาะความรู้ reusable แบบ Thai-first และ topic-first ไม่มี personal context หรือ business rule เฉพาะ DevEng
 
 ### 2.5 AI ทำหน้าที่ Technical Co-founder + Mentor
 ต้อง challenge ไม่เอาใจ ไม่ยอมรับทางลัดที่ทำให้ไม่เข้าใจจริง
@@ -72,7 +81,7 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 
 **เงื่อนไขสำคัญที่ต้องทำทุกครั้ง:** Codex ไม่รู้จัก Explanation Protocol (ข้อ 2.3) และ Learning Loop (ข้อ 2.2) ของเราโดยอัตโนมัติ — ต้องให้ Codex อ่านกติกาเป็น context ทุกครั้งที่เริ่ม session ใหม่ เพื่อให้มาตรฐานการสอนสม่ำเสมอกันทั้งสองตัว (ดูแผน `AGENTS.md` ใน Discussion Summary ฉบับล่าสุด)
 
-**Working mode update — 1 กรกฎาคม 2026:** ผู้ใช้ = Product Owner / Learner / Decision Maker; Codex = Executor / Hands-on Tutor / Quick Verifier; Claude = Reviewer / QA / Second Brain. `ApoRaviz_DevEng` เป็น learning mode หลักที่เรียนทุกบรรทัดด้วย Learning Loop เต็ม ส่วน `ApoRaviz_*` อื่นเป็น build mode เป็นหลัก ผู้ใช้ออกไอเดีย/requirement แล้ว AI ช่วย execute ตาม workspace rules พร้อม capture ความรู้ reusable กลับ `_docs` เมื่อจำเป็น
+**Working mode update — 27 กรกฎาคม 2026:** ผู้ใช้ = Product Owner / Learner / Decision Maker; Codex = Executor / Hands-on Tutor / Quick Verifier; Claude = Reviewer / QA / Second Brain. `ApoRaviz_DevEng` ใช้ `teach` เป็น Default Working Mode เพื่อเรียนทุกบรรทัดด้วย Learning Loop เต็ม ส่วน `ApoRaviz_*` อื่นใช้ `execute` เป็นหลัก ผู้ใช้ออกไอเดีย/requirement แล้ว AI implement, validate และส่งมอบตาม workspace rules พร้อม capture ความรู้ reusable กลับ `ApoRaviz_Workspace_Docs` เมื่อจำเป็น หลังมี code หรือ artifact แล้ว ผู้ใช้สามารถขอ `walkthrough` เพื่อให้ AI พาไล่อธิบายของเดิมอย่างลึกโดยไม่ให้เขียน implementation ซ้ำ
 
 ---
 
