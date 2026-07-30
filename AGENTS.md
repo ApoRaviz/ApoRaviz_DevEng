@@ -43,9 +43,10 @@ teach
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.6 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.6 (NestJS Exception Filter) ผ่าน Learning Loop และ Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.7 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.7 (NestJS Unit Test ด้วย Jest) ผ่าน Learning Loop และ Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
 - backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนใน `backend/src/main.ts` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
-- Step ถัดไปคือ 1.1.7 Unit Test
+- backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
+- Step ถัดไปคือ 1.1.8 Backend E2E Test (Jest + Supertest)
 
 ## Product Direction
 
