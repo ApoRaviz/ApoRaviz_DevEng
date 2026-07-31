@@ -43,10 +43,12 @@ teach
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.7 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.7 (NestJS Unit Test ด้วย Jest) ผ่าน Learning Loop และ Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
-- backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนใน `backend/src/main.ts` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.8 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.8 (Backend E2E Test ด้วย Jest + Supertest) ผ่าน Learning Loop และ Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
+- global imperative configuration ของ backend มี source of truth เดียวที่ `backend/src/configure-app.ts` (`configureApp(app)`) — `main.ts` เรียกหลัง `NestFactory.create()` ก่อน `listen()` และ E2E เรียกหลัง `createNestApplication()` ก่อน `init()`; ถ้าเพิ่ม global Pipe/Interceptor/Prefix ในอนาคต ให้เพิ่มใน `configureApp()` ไม่ใช่ใน `main.ts` โดยตรง มิฉะนั้น E2E จะไม่เห็น
+- backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนผ่าน `configureApp()` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` (ลงทะเบียนที่เดียว ไม่ซ้ำ) — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
 - backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
-- Step ถัดไปคือ 1.1.8 Backend E2E Test (Jest + Supertest)
+- backend E2E: `npm run test:e2e` = 1 suite / 2 tests — `backend/test/health.e2e-spec.ts` ครอบ success path (`GET /health` → 200 `{"status":"ok"}`) และ error path (`GET /missing` → 404 + custom Filter shape `statusCode`/`timestamp`/`path`/`message`) ผ่าน shared `configureApp()`; ขอบเขต: ยังไม่รัน `main.ts`/`bootstrap()` จริง ไม่พิสูจน์ production port/environment และครอบเฉพาะสอง route ที่มี assertion เท่านั้น
+- Step ถัดไปคือ 1.1.9 ASP.NET Core Bridge Lab
 
 ## Product Direction
 
