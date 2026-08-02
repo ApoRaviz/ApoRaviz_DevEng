@@ -11,12 +11,13 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ```text
 ApoRaviz_DevEng/
-├─ src/       Angular frontend
-└─ backend/   NestJS backend
+├─ src/             Angular frontend
+├─ backend/         NestJS backend (เส้นหลักระหว่างสร้าง MVP)
+└─ backend-dotnet/  ASP.NET Core bridge สำหรับเรียนและทำ behavior parity ภายหลัง
 ```
 
-Frontend และ backend อยู่ใน Git repository เดียวกัน แต่แยก `package.json`,
-dependencies และคำสั่ง build/test ออกจากกัน
+Frontend และ backend ทั้งสอง implementation อยู่ใน Git repository เดียวกัน แต่แยก project,
+dependencies และคำสั่ง build/test ออกจากกัน Angular frontend จะเลือก backend ผ่าน API base URL/configuration ไม่ได้มี frontend คนละชุด
 
 ใช้ Node.js ตาม `.nvmrc` ก่อนติดตั้ง dependencies หรือรันโปรเจกต์
 
@@ -51,6 +52,20 @@ npm run build
 npm test -- --runInBand
 npm run test:e2e
 ```
+
+## ASP.NET Core bridge
+
+`backend-dotnet/global.json` เลือก .NET SDK สำหรับ bridge project จึงต้องเข้า directory tree ของ `backend-dotnet` ก่อนรัน `dotnet`:
+
+```powershell
+cd backend-dotnet
+dotnet --version
+dotnet build src/ApoRaviz.DevEng.Api/ApoRaviz.DevEng.Api.csproj
+```
+
+การอยู่ที่ repository root แล้วส่งเพียง path ของ `.csproj` อาจทำให้ `dotnet` เลือก SDK จากนอก scope ของ `backend-dotnet/global.json`
+
+สถานะ checkpoint ปัจจุบันยังเป็น template `WeatherForecast`; `GET /health` และ test project อยู่ใน Step 1.1.9-2
 
 ## Code scaffolding
 

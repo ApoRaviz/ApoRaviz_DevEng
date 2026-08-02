@@ -3,7 +3,7 @@
 > แยกออกมาจาก Project Vision & Learning Protocol — Discussion Summary (เดิม V0.0.8)
 > เก็บเฉพาะส่วนที่ **LOCK แล้วและแทบไม่เปลี่ยนอีก** — บริบทชีวิต, หลักการ, Tech Stack, Architecture, Product Brief
 > ไฟล์พี่น้อง: `Roadmap_Progress.md` (Phase breakdown, อัปเดตบ่อยที่สุด), `Open_Questions.md` (สถานะคำถามค้าง)
-> อัปเดตล่าสุด: 27 กรกฎาคม 2026
+> อัปเดตล่าสุด: 2 สิงหาคม 2026
 
 ---
 
@@ -14,7 +14,7 @@
 - **17 ก.ค. 2026**: ย้ายบ้านไปอยู่ระยองถาวร ภรรยาจะออกจากงานประจำ
 - ภรรยามีภาวะเสี่ยงซึมเศร้า เป็นคนคิดมาก — ตัดสินใจไม่กดดันให้ทำธุรกิจ เพื่อไม่เพิ่มความเครียด
 - เวลาที่ทำโปรเจกต์ได้จริง: **3+ ชม./วัน**
-- เป้าหมาย 11 เดือนนี้: **เน้นความรู้แน่นขึ้นเป็นหลัก** รายได้จาก Product เป็นผลพลอยได้ระยะยาว ไม่ใช่ KPI หลักตอนนี้
+- เป้าหมาย 11 เดือนนี้: **เน้นความรู้แน่นขึ้นเป็นหลัก** โดยใช้ DevEng เป็นระบบฝึก production-shaped ให้ครบวงจรและ deploy ให้คนกลุ่มเล็กใช้จริงเพื่อฝึก operation/รับ feedback — ไม่ใช้ DevEng เป็นเป้าหมายขายเชิงพาณิชย์
 - **Job-Transition Timeline — LOCKED:** ตั้งใจเรียนให้ครบทุก Phase (0-8) ตามแผนเต็ม ไม่ตัดจบกลางทางเพื่อไปหางานก่อน — Portfolio ปัจจุบันครอบคลุมหัวข้อที่จำเป็นสำหรับสมัครงานอยู่แล้ว จึงไม่ต้องอัปเดต Portfolio เพิ่มระหว่างทาง แค่ทำให้ได้จริงตามที่ Portfolio ระบุไว้
 - หลัง 25/06/2026 จะ subscribe Claude และ Codex สำหรับการเรียนรู้ — เป็นจุดเริ่ม Phase 0 จริง
 
@@ -33,7 +33,7 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 
 | ระดับ | ขอบเขต | แนวทาง |
 |---|---|---|
-| **Core — เข้าใจทุกบรรทัด** | Angular, Tailwind CSS, Node.js, NestJS, PostgreSQL | ห้ามใช้โดยไม่เข้าใจกลไกจริง |
+| **Core — เข้าใจทุกบรรทัด** | Angular, Tailwind CSS, Node.js, NestJS, C#/.NET/ASP.NET Core, PostgreSQL | ห้ามใช้โดยไม่เข้าใจกลไกจริง |
 | **Auth/Security — Exception พิเศษ** | JWT, OAuth2/OIDC, Password hashing, Session management | เข้าใจลึกเท่า Core เพราะ bug = security incident จริง |
 | **มาตรฐานอุตสาหกรรม** | Redis, BullMQ, MinIO, Docker, Observability, Deploy tools, Mobile | ใช้เป็น + เข้าใจหลักการทำงาน ไม่ต้อง implement เองจากศูนย์ |
 
@@ -91,7 +91,8 @@ Workspace Docs เก็บเฉพาะความรู้ reusable แบ�
 |---|---|---|
 | Frontend | Angular, TypeScript, **Tailwind CSS ล้วน** | Core — เข้าใจทุกบรรทัด |
 | Frontend (เสริม) | UX/UI Design fundamentals | เรียนคู่กับ Tailwind |
-| Backend | Node.js, NestJS | Core — เข้าใจทุกบรรทัด |
+| Backend หลักระหว่างสร้าง Nest MVP | Node.js, NestJS | Core — เข้าใจทุกบรรทัด |
+| Backend Bridge / MVP Parity | C#, .NET, ASP.NET Core | เริ่มจาก Bridge Lab; หลัง Nest MVP เสร็จจึงกลับมาทำ behavior parity ควบคู่กัน |
 | Database | PostgreSQL (+ pgvector) | Core — เข้าใจทุกบรรทัด |
 | Auth/Security | JWT (มือก่อน), Passport.js, OAuth2/OIDC, bcrypt/argon2, Refresh token rotation, RBAC | Deep-dive พิเศษ — ฝังใน Phase 1 |
 | Container | Docker, Docker Compose | มาตรฐานอุตสาหกรรม |
@@ -109,6 +110,8 @@ Workspace Docs เก็บเฉพาะความรู้ reusable แบ�
 | Mobile | Capacitor | มาตรฐานอุตสาหกรรม — **หมายเหตุ: ไม่รวมสิทธิ์ระดับ OS เช่น screen capture แอปอื่น ดูข้อ 8.5** |
 
 **หมายเหตุ:** ไม่มี component library (เช่น PrimeNG) ผสมกับ Tailwind — ดูเหตุผลเต็มในข้อ 5
+
+**Backend coexistence decision — 2 สิงหาคม 2026:** มี Angular frontend เพียงชุดเดียว และเลือกว่าจะเรียก NestJS หรือ ASP.NET Core ผ่าน API base URL/configuration ห้ามกระจายเงื่อนไขเฉพาะ framework เข้า UI โดยไม่จำเป็น ช่วงสร้าง MVP ให้ NestJS เป็นเส้นหลักก่อน แล้วจึงกลับมาทำ ASP.NET Core ให้มี behavior parity ของ MVP; `backend-dotnet/` เป็น implementation แยก ไม่แทนที่ `backend/`
 
 ---
 
@@ -251,7 +254,7 @@ MVP feature scope ฉบับสมบูรณ์อยู่ในข้อ 8
 > MVP รอบแรกคือ subset เล็กที่สุดของ Core Loop นี้ — ดูขอบเขตจริงในข้อ 8
 
 ### Monetization
-ยังไม่ตัดสินใจ (deferred) — หลักการ: เอาความรู้ก่อน รายได้ค่อยว่ากันทีหลัง
+DevEng ไม่ใช่ผลิตภัณฑ์เป้าหมายสำหรับขาย ให้คงบทบาทเป็นระบบฝึกครบวงจรและสนามทดลอง deployment กับผู้ใช้กลุ่มเล็ก ส่วนผลิตภัณฑ์เชิงพาณิชย์อยู่นอก scope ของ repo นี้
 
 ---
 

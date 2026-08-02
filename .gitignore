@@ -21,6 +21,10 @@ yarn-error.log*
 /backend/dist
 /backend/coverage
 
+# ASP.NET Core backend
+/backend-dotnet/**/bin/
+/backend-dotnet/**/obj/
+
 # Environment files
 /.env
 

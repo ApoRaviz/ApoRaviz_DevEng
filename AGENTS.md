@@ -32,12 +32,13 @@ teach
 เป้าหมายหลักตอนนี้:
 
 - เรียนให้เข้าใจแน่นตาม roadmap เต็ม ไม่รีบตัด scope การเรียนเพื่อหางานก่อน
-- สร้าง product จริงเป็นผลลัพธ์ของการเรียน ไม่ใช่แค่ toy project
+- สร้างระบบฝึกที่ production-shaped และครบวงจรเป็นผลลัพธ์ของการเรียน ไม่ใช่แค่ toy project
+- deploy ให้คนกลุ่มเล็กใช้จริงเพื่อฝึก operation และรับ feedback แต่ไม่ใช้ DevEng เป็นเป้าหมายขายเชิงพาณิชย์
 - ใช้ AI agents เป็น technical co-founder + mentor ที่ challenge ได้ ไม่ใช่ผู้ช่วยที่เอาใจอย่างเดียว
 
 สถานะปัจจุบัน:
 
-- Angular 22 application ที่ root + NestJS 11 backend ใน `backend/` (Git repo เดียว, package.json แยกกัน)
+- Angular 22 application ที่ root + NestJS 11 backend ใน `backend/` + ASP.NET Core bridge ใน `backend-dotnet/` (Git repo เดียว แต่แต่ละ backend มี project/dependency ของตัวเอง)
 - standalone component style
 - Angular Router พร้อม SSR/server rendering scaffold
 - package manager: npm
@@ -48,7 +49,10 @@ teach
 - backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนผ่าน `configureApp()` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` (ลงทะเบียนที่เดียว ไม่ซ้ำ) — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
 - backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
 - backend E2E: `npm run test:e2e` = 1 suite / 2 tests — `backend/test/health.e2e-spec.ts` ครอบ success path (`GET /health` → 200 `{"status":"ok"}`) และ error path (`GET /missing` → 404 + custom Filter shape `statusCode`/`timestamp`/`path`/`message`) ผ่าน shared `configureApp()`; ขอบเขต: ยังไม่รัน `main.ts`/`bootstrap()` จริง ไม่พิสูจน์ production port/environment และครอบเฉพาะสอง route ที่มี assertion เท่านั้น
-- Step ถัดไปคือ 1.1.9 ASP.NET Core Bridge Lab
+- Step 1.1.9 แบ่งเป็นสอง checkpoint: `1.1.9-1` Foundations & Scaffold และ `1.1.9-2` Health API & Tests
+- `1.1.9-1` ทำถึง controller-based ASP.NET Core Web API scaffold แล้ว: `backend-dotnet/global.json` เลือก SDK `10.0.302`, project target `net10.0`, build ผ่าน และรัน HTTP/HTTPS profile ได้; scaffold `WeatherForecast` ยังอยู่โดยตั้งใจ
+- สถานะนี้เป็น checkpoint กลางบท ไม่ใช่การปิด Step 1.1.9 และยังไม่ให้ Claude stamp ว่าเสร็จ
+- Step ถัดไปคือ 1.1.9-2: เปลี่ยน scaffold เป็น `GET /health`, เพิ่ม test project, รัน `dotnet test` และตรวจ behavior parity ที่จำเป็น
 
 ## Product Direction
 
@@ -100,7 +104,7 @@ Explanation Protocol:
 
 No Black Box:
 
-- Core ที่ต้องเข้าใจทุกบรรทัด: Angular, TypeScript, Tailwind CSS, Node.js, NestJS, PostgreSQL
+- Core ที่ต้องเข้าใจทุกบรรทัด: Angular, TypeScript, Tailwind CSS, Node.js, NestJS, C#/.NET/ASP.NET Core, PostgreSQL
 - Auth/Security ต้องเข้าใจลึกเป็นพิเศษ: JWT, OAuth/OIDC, password hashing, session management, RBAC
 - เครื่องมือมาตรฐานอุตสาหกรรม เช่น Docker, Redis, BullMQ, MinIO, Observability, Deploy tools ใช้ได้ แต่ต้องเข้าใจหลักการทำงาน
 
@@ -116,7 +120,9 @@ Mentor stance:
 
 - Architecture: Modular Monolith
 - Frontend: Angular + TypeScript + Tailwind CSS ล้วน
-- Backend: NestJS
+- Backend หลักระหว่างสร้าง Nest MVP: NestJS ใน `backend/`
+- ASP.NET Core bridge: controller-based Web API ใน `backend-dotnet/`; หลัง Nest MVP เสร็จจะกลับมาทำ behavior parity ของ MVP เพื่อเรียน C#/.NET ควบคู่กัน
+- Frontend มี Angular application เดียวและเลือก backend ด้วย API base URL/configuration ไม่สร้าง frontend แยกตาม framework
 - Database: PostgreSQL, อนาคตมี pgvector ได้
 - Auth: เริ่มจาก JWT เขียนมือเพื่อเรียนกลไกเท่านั้น (ไม่ใช่ production-final) แล้วกลับมาใช้ library/standard implementation ที่ผ่าน test/security review ก่อน deploy จริง
 - AI Provider Phase 2: External API free tier ก่อน ผ่าน abstraction layer

@@ -2,7 +2,7 @@
 
 > Version: **V0.0.12**
 > สรุปบทสนทนาเพื่อนำไปต่อในแชทใหม่ (ต่อยอดจาก V0.0.11)
-> วันที่สรุป: 20 มิถุนายน 2026
+> วันที่สรุป: 20 มิถุนายน 2026 (มี post-summary decisions ถึง 2 สิงหาคม 2026)
 > สถานะ: **Architecture + AI Approach + Repo Name (#5) + Frontend Styling + Product Brief LOCK แล้ว ✅ — Phase 0 & Phase 1 แตกละเอียดระดับ Learning Loop เรียบร้อย ✅ — Gap ด้าน Testing/Security เพิ่มเข้า Phase 1 ✅ — Review Fixes V0.0.10 เพิ่มแล้ว ✅ — AI Safety/Privacy ก่อน Phase 2 เพิ่มแล้ว ✅ — Test runner wording sync แล้ว ✅ — `AGENTS.md` ร่างเสร็จแล้ว ✅ — Role Division/Knowledge Sync ปรับให้ครบ Learning Loop แล้ว ✅ — User pace context อัปเดตแล้ว ✅ — รอเริ่ม Phase 0 จริงหลัง 25/06/2026 (วัน subscribe Claude + Codex)**
 
 ---
@@ -21,6 +21,13 @@
 | `CLAUDE.md` | ✅ ร่างเสร็จแล้ว — ไฟล์บางๆ ที่ root ของ repo ใช้ `@AGENTS.md` import กติกาทั้งหมด |
 
 ### 0.2 Change Log
+
+#### Post-V0.0.12 (2 สิงหาคม 2026) — Backend Learning Direction + Step 1.1.9 Checkpoint
+
+- DevEng เป็นระบบฝึก production-shaped ที่จะ deploy ให้คนกลุ่มเล็กใช้จริง แต่ไม่ใช่เป้าหมายขายเชิงพาณิชย์
+- NestJS เป็นเส้นหลักจน Nest MVP เสร็จ จากนั้นกลับมาทำ ASP.NET Core behavior parity; Angular frontend มีชุดเดียวและเลือก backend ผ่าน API base URL/configuration
+- แยก Step 1.1.9 เป็น `1.1.9-1` Foundations & Scaffold และ `1.1.9-2` Health API & Tests; เพิ่ม `1.1.10` Middleware & Request Pipeline Bridge
+- แตก deployment learning เป็น Domain/DNS, HTTPS/TLS/Certificate, Reverse Proxy และ Deploy flow
 
 #### Post-V0.0.12 (27 มิถุนายน 2026) — CLAUDE.md ร่างเสร็จ + AGENTS.md อุด gap
 
@@ -94,7 +101,7 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 
 | ระดับ | ขอบเขต | แนวทาง |
 |---|---|---|
-| **Core — เข้าใจทุกบรรทัด** | Angular, Tailwind CSS, Node.js, NestJS, PostgreSQL | ห้ามใช้โดยไม่เข้าใจกลไกจริง |
+| **Core — เข้าใจทุกบรรทัด** | Angular, Tailwind CSS, Node.js, NestJS, C#/.NET/ASP.NET Core, PostgreSQL | ห้ามใช้โดยไม่เข้าใจกลไกจริง |
 | **Auth/Security — Exception พิเศษ** | JWT, OAuth2/OIDC, Password hashing, Session management | เข้าใจลึกเท่า Core เพราะ bug = security incident จริง |
 | **มาตรฐานอุตสาหกรรม** | Redis, BullMQ, MinIO, Docker, Observability, Deploy tools, Mobile | ใช้เป็น + เข้าใจหลักการทำงาน ไม่ต้อง implement เองจากศูนย์ |
 
@@ -144,7 +151,8 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 |---|---|---|
 | Frontend | Angular, TypeScript, **Tailwind CSS ล้วน** | Core — เข้าใจทุกบรรทัด |
 | Frontend (เสริม) | UX/UI Design fundamentals | เรียนคู่กับ Tailwind |
-| Backend | Node.js, NestJS | Core — เข้าใจทุกบรรทัด |
+| Backend หลักระหว่างสร้าง Nest MVP | Node.js, NestJS | Core — เข้าใจทุกบรรทัด |
+| Backend Bridge / MVP Parity | C#, .NET, ASP.NET Core | เริ่มจาก Bridge Lab; หลัง Nest MVP เสร็จจึงกลับมาทำ behavior parity ควบคู่กัน |
 | Database | PostgreSQL (+ pgvector) | Core — เข้าใจทุกบรรทัด |
 | Auth/Security | JWT (มือก่อน), Passport.js, OAuth2/OIDC, bcrypt/argon2, Refresh token rotation, RBAC | Deep-dive พิเศษ — ฝังใน Phase 1 |
 | Container | Docker, Docker Compose | มาตรฐานอุตสาหกรรม |
@@ -162,6 +170,8 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 | Mobile | Capacitor | มาตรฐานอุตสาหกรรม — **หมายเหตุ: ไม่รวมสิทธิ์ระดับ OS เช่น screen capture แอปอื่น ดูข้อ 8.5** |
 
 **หมายเหตุ:** ไม่มี component library (เช่น PrimeNG) ผสมกับ Tailwind — ดูเหตุผลเต็มในข้อ 5
+
+**Backend coexistence decision:** มี Angular frontend เพียงชุดเดียว เลือก NestJS หรือ ASP.NET Core ผ่าน API base URL/configuration; `backend/` และ `backend-dotnet/` เป็น implementation แยก โดย NestJS เป็นเส้นหลักจน Nest MVP เสร็จ
 
 ---
 
@@ -300,7 +310,9 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 | 1.1.6 | Exception Filter คืออะไร — ทำไม error ดิบๆ (stack trace) ที่หลุดออกไปหา frontend คือ security leak, สร้าง Global Exception Filter แรก |
 | 1.1.7 | Unit Test คืออะไร — เขียน unit test แรกให้ Service ด้วย Jest ตั้งแต่ skeleton ยังเล็ก (ฝึกนิสัยก่อนโค้ดจะเยอะ) |
 | 1.1.8 | Backend E2E Test คืออะไร — ใช้ Jest + Supertest เรียก Nest application ผ่าน HTTP, เข้าใจ `test/` และ `jest-e2e.json`, และแยกจาก Unit Test กับ Playwright full E2E |
-| 1.1.9 | ASP.NET Core Bridge Lab — แยก C#, .NET และ ASP.NET Core; ตรวจ .NET SDK/ใช้ `dotnet` CLI; สร้าง controller-based Web API project; อ่าน File Map (`.csproj`, `Program.cs`, `appsettings*.json`, `Properties/launchSettings.json`, `Controllers/`, `bin/`, `obj/`); ทดลอง `dotnet run/build/test` — เป็น lab แยกเพื่อเทียบพื้นฐานกับ NestJS ไม่เปลี่ยน backend หลักของ DevEng และยังไม่ต่อ DB/Auth |
+| 1.1.9-1 | ASP.NET Core Bridge — Foundations & Scaffold: C#/.NET/ASP.NET Core, SDK/Runtime/Target Framework, `global.json`, `dotnet` CLI, controller-based Web API, File Map, restore/build/run และ HTTP/HTTPS |
+| 1.1.9-2 | ASP.NET Core Bridge — Health API & Tests: ถอด scaffold, ทำ `GET /health`, เพิ่ม test project, `dotnet test` และตรวจ behavior parity ที่จำเป็น; ยังไม่ต่อ DB/Auth |
+| 1.1.10 | Middleware & Request Pipeline Bridge — เทียบ NestJS/ASP.NET Core, ordering, `next`, short-circuit และ safe request logging |
 
 **1.2 Frontend คุยกับ Backend**
 | Step | หัวข้อ |
@@ -369,10 +381,12 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 **1.8 Deploy ขึ้น VPS จริง**
 | Step | หัวข้อ |
 |---|---|
-| 1.8.1 | Reverse Proxy คืออะไร (Nginx/Caddy) |
-| 1.8.2 | Deploy flow หน้าตาเป็นยังไง (build → push → run บน VPS) |
+| 1.8.1 | Domain และ DNS คืออะไร — ชื่อโดเมนชี้ไปยัง server ได้อย่างไร |
+| 1.8.2 | HTTPS, TLS และ Certificate — identity, trust chain, expiry/renewal และ development vs production |
+| 1.8.3 | Reverse Proxy คืออะไร (Nginx/Caddy) |
+| 1.8.4 | Deploy flow หน้าตาเป็นยังไง (build → push → run บน VPS) |
 
-> รวม Phase 1 ทั้งหมดมีประมาณ 42 รอบ Learning Loop ย่อย
+> รวม Phase 1 ทั้งหมดมีประมาณ 46 รอบ Learning Loop ย่อย
 
 ### 7.4 Phase 2 Guardrail ก่อนเสียบ AI จริง — เพิ่มใน V0.0.10
 
@@ -472,7 +486,7 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 > MVP รอบแรกคือ subset เล็กที่สุดของ Core Loop นี้ — ดูขอบเขตจริงในข้อ 8
 
 ### Monetization
-ยังไม่ตัดสินใจ (deferred) — หลักการ: เอาความรู้ก่อน รายได้ค่อยว่ากันทีหลัง
+DevEng ไม่ใช่ผลิตภัณฑ์เป้าหมายสำหรับขาย ให้คงบทบาทเป็นระบบฝึกครบวงจรและสนามทดลอง deployment กับผู้ใช้กลุ่มเล็ก ส่วนผลิตภัณฑ์เชิงพาณิชย์อยู่นอก scope ของ repo นี้
 
 ---
 
