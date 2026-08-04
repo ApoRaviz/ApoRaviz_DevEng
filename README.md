@@ -61,11 +61,14 @@ npm run test:e2e
 cd backend-dotnet
 dotnet --version
 dotnet build src/ApoRaviz.DevEng.Api/ApoRaviz.DevEng.Api.csproj
+dotnet test tests/ApoRaviz.DevEng.Api.Tests/ApoRaviz.DevEng.Api.Tests.csproj
 ```
 
 การอยู่ที่ repository root แล้วส่งเพียง path ของ `.csproj` อาจทำให้ `dotnet` เลือก SDK จากนอก scope ของ `backend-dotnet/global.json`
 
-สถานะ checkpoint ปัจจุบันยังเป็น template `WeatherForecast`; `GET /health` และ test project อยู่ใน Step 1.1.9-2
+bridge ปัจจุบันถอด `WeatherForecast` scaffold แล้วและมี controller-based `GET /health` ซึ่งตอบ `200 {"status":"ok"}` พร้อม xUnit integration test ที่เปิด application ด้วย `WebApplicationFactory<Program>`, ส่ง request ผ่าน TestServer และตรวจทั้ง status code กับ JSON body โดยไม่ต้องเปิด port จริง
+
+สถานะนี้คือ Step 1.1.9-2 ที่ผ่าน Learning Loop แล้วและกำลังรอ final Independent Review/QA ก่อนถือว่า Step 1.1.9 ปิดสมบูรณ์
 
 ## Code scaffolding
 

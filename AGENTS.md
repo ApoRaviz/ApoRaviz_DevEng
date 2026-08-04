@@ -44,15 +44,15 @@ teach
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.8 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.8 (Backend E2E Test ด้วย Jest + Supertest) ผ่าน Learning Loop และ Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.9 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.9 (ASP.NET Core Bridge Lab ทั้ง Part 1 Foundations & Scaffold และ Part 2 Health API & Tests) ผ่าน Learning Loop และ final Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
 - global imperative configuration ของ backend มี source of truth เดียวที่ `backend/src/configure-app.ts` (`configureApp(app)`) — `main.ts` เรียกหลัง `NestFactory.create()` ก่อน `listen()` และ E2E เรียกหลัง `createNestApplication()` ก่อน `init()`; ถ้าเพิ่ม global Pipe/Interceptor/Prefix ในอนาคต ให้เพิ่มใน `configureApp()` ไม่ใช่ใน `main.ts` โดยตรง มิฉะนั้น E2E จะไม่เห็น
 - backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนผ่าน `configureApp()` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` (ลงทะเบียนที่เดียว ไม่ซ้ำ) — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
 - backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
 - backend E2E: `npm run test:e2e` = 1 suite / 2 tests — `backend/test/health.e2e-spec.ts` ครอบ success path (`GET /health` → 200 `{"status":"ok"}`) และ error path (`GET /missing` → 404 + custom Filter shape `statusCode`/`timestamp`/`path`/`message`) ผ่าน shared `configureApp()`; ขอบเขต: ยังไม่รัน `main.ts`/`bootstrap()` จริง ไม่พิสูจน์ production port/environment และครอบเฉพาะสอง route ที่มี assertion เท่านั้น
-- Step 1.1.9 แบ่งเป็นสอง checkpoint: `1.1.9-1` Foundations & Scaffold และ `1.1.9-2` Health API & Tests
-- `1.1.9-1` ทำถึง controller-based ASP.NET Core Web API scaffold แล้ว: `backend-dotnet/global.json` เลือก SDK `10.0.302`, project target `net10.0`, build ผ่าน และรัน HTTP/HTTPS profile ได้; scaffold `WeatherForecast` ยังอยู่โดยตั้งใจ
-- สถานะนี้เป็น checkpoint กลางบท ไม่ใช่การปิด Step 1.1.9 และยังไม่ให้ Claude stamp ว่าเสร็จ
-- Step ถัดไปคือ 1.1.9-2: เปลี่ยน scaffold เป็น `GET /health`, เพิ่ม test project, รัน `dotnet test` และตรวจ behavior parity ที่จำเป็น
+- ASP.NET Core bridge ใน `backend-dotnet/`: `global.json` เลือก SDK `10.0.302` ด้วย `rollForward: latestPatch` (ต้อง `cd backend-dotnet` ก่อนรัน `dotnet` มิฉะนั้น current working directory อยู่นอก scope ของ `global.json`), API project target `net10.0`
+- `WeatherForecast` scaffold ถูกถอดครบแล้ว — bridge มี controller-based `GET /health` ที่ `backend-dotnet/src/ApoRaviz.DevEng.Api/Controllers/HealthController.cs` ตอบ `200 {"status":"ok"}`; ใช้ `[Route("[controller]")]` จึงมีเฉพาะ `/health` ไม่มี `/api/health` และ `Program.cs` เพิ่ม `public partial class Program {}` ใต้ `app.Run()` เพื่อให้ test project เห็น entry point (ไม่ได้สร้าง startup ตัวที่สอง)
+- ASP.NET Core integration test: `backend-dotnet/tests/ApoRaviz.DevEng.Api.Tests/` ใช้ xUnit + `Microsoft.AspNetCore.Mvc.Testing` (อยู่ใน test project เท่านั้น) กับ `WebApplicationFactory<Program>` ผ่าน `IClassFixture` — `dotnet test` = 1 test (`GetHealth_ReturnsOkResponse`) ตรวจทั้ง `HttpStatusCode.OK` และ JSON body `Status == "ok"`; ขอบเขต: รันบน in-memory TestServer ไม่ผูก `launchSettings.json` และไม่พิสูจน์ production port/certificate/deployment
+- Step ถัดไปคือ 1.1.10 Middleware & Request Pipeline Bridge — เทียบ NestJS กับ ASP.NET Core: middleware, ลำดับ pipeline, `next`, short-circuit และ safe request logging
 
 ## Product Direction
 
