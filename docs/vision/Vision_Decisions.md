@@ -92,7 +92,7 @@ Workspace Docs เก็บเฉพาะความรู้ reusable แบ�
 | Frontend | Angular, TypeScript, **Tailwind CSS ล้วน** | Core — เข้าใจทุกบรรทัด |
 | Frontend (เสริม) | UX/UI Design fundamentals | เรียนคู่กับ Tailwind |
 | Backend หลักระหว่างสร้าง Nest MVP | Node.js, NestJS | Core — เข้าใจทุกบรรทัด |
-| Backend Bridge / MVP Parity | C#, .NET, ASP.NET Core | เริ่มจาก Bridge Lab; หลัง Nest MVP เสร็จจึงกลับมาทำ behavior parity ควบคู่กัน |
+| Backend Bridge / MVP Parity | C#, .NET, ASP.NET Core | คง Foundations/Health Lab ที่ทำแล้ว; กลับมาทำ behavior parity หลัง NestJS ผ่าน Phase 1.8.4 |
 | Database | PostgreSQL (+ pgvector) | Core — เข้าใจทุกบรรทัด |
 | Auth/Security | JWT (มือก่อน), Passport.js, OAuth2/OIDC, bcrypt/argon2, Refresh token rotation, RBAC | Deep-dive พิเศษ — ฝังใน Phase 1 |
 | Container | Docker, Docker Compose | มาตรฐานอุตสาหกรรม |
@@ -112,6 +112,8 @@ Workspace Docs เก็บเฉพาะความรู้ reusable แบ�
 **หมายเหตุ:** ไม่มี component library (เช่น PrimeNG) ผสมกับ Tailwind — ดูเหตุผลเต็มในข้อ 5
 
 **Backend coexistence decision — 2 สิงหาคม 2026:** มี Angular frontend เพียงชุดเดียว และเลือกว่าจะเรียก NestJS หรือ ASP.NET Core ผ่าน API base URL/configuration ห้ามกระจายเงื่อนไขเฉพาะ framework เข้า UI โดยไม่จำเป็น ช่วงสร้าง MVP ให้ NestJS เป็นเส้นหลักก่อน แล้วจึงกลับมาทำ ASP.NET Core ให้มี behavior parity ของ MVP; `backend-dotnet/` เป็น implementation แยก ไม่แทนที่ `backend/`
+
+**Backend learning sequence decision — 10 สิงหาคม 2026:** การสลับ NestJS/TypeScript กับ ASP.NET Core/C# ระหว่างสร้างเส้นหลักเพิ่ม cognitive load จึงไม่ interleave สอง learning track ต่อจากนี้ คง Step 1.1.9 และ `backend-dotnet/` ที่ทำเสร็จแล้วไว้โดยไม่ย้อนหรือลบ, ปิด Step 1.1.10 เป็น NestJS-only แล้วเดิน 1.2.1–1.8.4 ด้วย NestJS ต่อเนื่อง เมื่อ NestJS MVP เสถียรและ deploy ได้แล้วจึงเริ่ม 1.9 ASP.NET Core MVP Parity โดยใช้ behavior ของ NestJS เป็น source of truth; 1.9.1 รับหัวข้อ ASP.NET Core Middleware & Request Pipeline ที่ย้ายออกจาก 1.1.10 และ parity step อื่นจะถูกแตกละเอียดเมื่อเริ่ม 1.9
 
 ---
 

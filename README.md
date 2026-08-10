@@ -13,7 +13,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ApoRaviz_DevEng/
 ├─ src/             Angular frontend
 ├─ backend/         NestJS backend (เส้นหลักระหว่างสร้าง MVP)
-└─ backend-dotnet/  ASP.NET Core bridge สำหรับเรียนและทำ behavior parity ภายหลัง
+└─ backend-dotnet/  ASP.NET Core bridge ที่พักไว้จน NestJS ผ่าน Phase 1.8.4
 ```
 
 Frontend และ backend ทั้งสอง implementation อยู่ใน Git repository เดียวกัน แต่แยก project,
@@ -68,7 +68,7 @@ dotnet test tests/ApoRaviz.DevEng.Api.Tests/ApoRaviz.DevEng.Api.Tests.csproj
 
 bridge ปัจจุบันถอด `WeatherForecast` scaffold แล้วและมี controller-based `GET /health` ซึ่งตอบ `200 {"status":"ok"}` พร้อม xUnit integration test ที่เปิด application ด้วย `WebApplicationFactory<Program>`, ส่ง request ผ่าน TestServer และตรวจทั้ง status code กับ JSON body โดยไม่ต้องเปิด port จริง
 
-สถานะนี้คือ Step 1.1.9-2 ที่ผ่าน Learning Loop แล้วและกำลังรอ final Independent Review/QA ก่อนถือว่า Step 1.1.9 ปิดสมบูรณ์
+Step 1.1.9 ผ่าน Learning Loop และ final Independent Review/QA แล้ว ปัจจุบันคง `backend-dotnet/` ไว้โดยไม่แก้หรือลบ และพัก ASP.NET Core learning track จน NestJS ผ่าน Phase 1.8.4 จากนั้นจึงกลับมาทำ ASP.NET Core MVP Parity ในหัวข้อ 1.9
 
 ## Code scaffolding
 

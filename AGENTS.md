@@ -44,7 +44,7 @@ teach
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.9 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.9 (ASP.NET Core Bridge Lab ทั้ง Part 1 Foundations & Scaffold และ Part 2 Health API & Tests) ผ่าน Learning Loop และ final Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.10 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.9 (ASP.NET Core Bridge Lab ทั้ง Part 1 และ Part 2) และ Step 1.1.10 (NestJS Middleware & Request Pipeline) ผ่าน Learning Loop และ final Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
 - global imperative configuration ของ backend มี source of truth เดียวที่ `backend/src/configure-app.ts` (`configureApp(app)`) — `main.ts` เรียกหลัง `NestFactory.create()` ก่อน `listen()` และ E2E เรียกหลัง `createNestApplication()` ก่อน `init()`; ถ้าเพิ่ม global Pipe/Interceptor/Prefix ในอนาคต ให้เพิ่มใน `configureApp()` ไม่ใช่ใน `main.ts` โดยตรง มิฉะนั้น E2E จะไม่เห็น
 - backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนผ่าน `configureApp()` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` (ลงทะเบียนที่เดียว ไม่ซ้ำ) — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
 - backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
@@ -52,7 +52,12 @@ teach
 - ASP.NET Core bridge ใน `backend-dotnet/`: `global.json` เลือก SDK `10.0.302` ด้วย `rollForward: latestPatch` (ต้อง `cd backend-dotnet` ก่อนรัน `dotnet` มิฉะนั้น current working directory อยู่นอก scope ของ `global.json`), API project target `net10.0`
 - `WeatherForecast` scaffold ถูกถอดครบแล้ว — bridge มี controller-based `GET /health` ที่ `backend-dotnet/src/ApoRaviz.DevEng.Api/Controllers/HealthController.cs` ตอบ `200 {"status":"ok"}`; ใช้ `[Route("[controller]")]` จึงมีเฉพาะ `/health` ไม่มี `/api/health` และ `Program.cs` เพิ่ม `public partial class Program {}` ใต้ `app.Run()` เพื่อให้ test project เห็น entry point (ไม่ได้สร้าง startup ตัวที่สอง)
 - ASP.NET Core integration test: `backend-dotnet/tests/ApoRaviz.DevEng.Api.Tests/` ใช้ xUnit + `Microsoft.AspNetCore.Mvc.Testing` (อยู่ใน test project เท่านั้น) กับ `WebApplicationFactory<Program>` ผ่าน `IClassFixture` — `dotnet test` = 1 test (`GetHealth_ReturnsOkResponse`) ตรวจทั้ง `HttpStatusCode.OK` และ JSON body `Status == "ok"`; ขอบเขต: รันบน in-memory TestServer ไม่ผูก `launchSettings.json` และไม่พิสูจน์ production port/certificate/deployment
-- Step ถัดไปคือ 1.1.10 Middleware & Request Pipeline Bridge — เทียบ NestJS กับ ASP.NET Core: middleware, ลำดับ pipeline, `next`, short-circuit และ safe request logging
+- NestJS request pipeline: `backend/src/common/middleware/request-logging.middleware.ts` implement `NestMiddleware` — `use()` จดเวลาเริ่มเป็น local variable ต่อ request, ลงทะเบียน `response.on('finish', callback)` **ก่อน** `next()` แล้วอ่าน final `statusCode`/คำนวณ duration ภายใน callback; safe log มีเฉพาะ `method path status durationms` ไม่ log query string, body, header, cookie หรือ token (ใช้ `request.path` ที่ไม่รวม query string)
+- ลงทะเบียนที่ root `AppModule` ผ่าน `implements NestModule` + `configure(consumer)` + `consumer.apply(RequestLoggingMiddleware).forRoutes('*')` จึงครอบทั้ง route ที่พบและไม่พบ (`/health` → 200, `/missing` → custom 404 จาก Exception Filter ก็ถูก log ทั้งคู่); `configure()` hook ของ Module เป็นคนละตัวกับ helper `configureApp(app)`
+- ขอบเขตที่ยังไม่พิสูจน์ด้วย automated test: ไม่มี assertion ต่อ logger — Nest `TestingLogger` ซ่อน `logger.log()` ใน E2E output จึงใช้ E2E PASS อย่างเดียวสรุปว่า logging ทำงานไม่ได้ ต้องใช้ runtime probe หรือ logger/test double
+- Step ถัดไปคือ 1.2.1 HttpClient (Frontend คุยกับ Backend) — เดิน NestJS เป็น learning track เดียวต่อเนื่องจนผ่าน Phase 1.8.4
+
+- 10 สิงหาคม 2026 — backend learning sequence เปลี่ยนเพื่อลด cognitive load: คง Step 1.1.9 และ `backend-dotnet/` ที่ทำเสร็จแล้วไว้เป็นประวัติ, ไม่เพิ่ม ASP.NET Core Middleware ตอนนี้, ปิด 1.1.10 เป็น NestJS-only แล้วไป 1.2.1 ต่อเนื่องด้วย NestJS จนผ่าน 1.8.4; ASP.NET Core Middleware ย้ายไป 1.9.1 ภายใต้ ASP.NET Core MVP Parity และ parity step อื่นจะถูกแตกตอนเริ่ม 1.9 โดยใช้ NestJS MVP ที่เสถียรแล้วเป็น source of truth
 
 ## Product Direction
 
@@ -100,7 +105,17 @@ Explanation Protocol:
 - ก่อนพูดถึงเทอม B ต้องอธิบายเทอม A ที่ B ยืนอยู่บนนั้นก่อน
 - เริ่มจากภาพจำหรือ analogy ง่าย ๆ ก่อนใส่ technical term
 - ห้ามโยนศัพท์ technical ตรง ๆ โดยไม่ปูพื้น
+- ก่อนให้ learner เพิ่ม snippet ใหม่ ให้สำรวจศัพท์, syntax, class, decorator และ API ที่ปรากฏใน snippet; เรื่องที่ยังไม่เคยเรียนต้องอธิบายก่อนให้วาง ส่วนเรื่องที่เคยเรียนแต่จำเป็นต่อ flow ใหม่ให้ทวนสั้น ๆ แบบ just-in-time
+- เมื่อสอน code หนึ่งบรรทัดที่ประกอบด้วยหลายส่วน ให้ใช้วิธี "แยกชิ้นแล้วประกอบกลับ": แสดงบรรทัดเต็มก่อน -> แยกคำหรือส่วนตามหน้าที่ -> อธิบายแต่ละส่วนพร้อมตัวอย่างสั้น -> ประกอบกลับเป็นความหมายและ flow ของทั้งบรรทัด; ไม่แยกทุกคำออกเป็นบทเรียนยาวโดยอัตโนมัติ เว้นแต่ส่วนนั้นเป็นพื้นฐานสำคัญจริงหรือ learner ยังสับสน
 - ถ้า Angular scaffold มีไฟล์เยอะ ให้ recap file map ก่อน Knowledge Check
+- เมื่อความรู้ใหม่ใช้ความรู้เก่าเป็นฐาน ให้หยิบภาพจำ, flow และคำสำคัญของเรื่องเดิมมาทวนสั้น ๆ แบบ just-in-time ก่อนเชื่อมเข้าสู่ของใหม่ เพื่อกันลืมโดยไม่เปิดบทเดิมเต็มบทซ้ำ; เช่น เมื่อบทอนาคตแตะ Middleware ให้ทวน `request -> middleware ตามลำดับ -> next หรือ short-circuit -> Controller -> response ย้อนกลับ`
+
+Start-of-day teaching check:
+
+- ก่อนเริ่มสอนใน turn แรกของแชทใหม่ ให้เช็กวันที่และ timezone จริง แล้วเทียบกับวันที่ของ teaching checkpoint ล่าสุดที่เชื่อถือได้
+- ถ้าเป็นแชทใหม่, วันที่ปัจจุบันไม่ตรงกับ checkpoint ล่าสุด หรือหา checkpoint date ไม่ได้ ให้ถือว่า context อาจขาด: ต้องอ่าน `AGENTS.md` และ `../ApoRaviz_Workspace_Docs/TEACHING_RULES.md` ฉบับเต็มอีกครั้ง แล้วตรวจ `git status`/diff, Roadmap checkpoint และไฟล์ที่ learner แก้ค้าง
+- หลังอ่านกฎ ให้สรุปตำแหน่งปัจจุบัน, ขอบเขตของส่วนย่อยถัดไป และศัพท์ใหม่ที่จะต้องปูพื้น เพื่อป้องกันบทเรียน drift หรือออกนอก scope
+- ห้ามเริ่มสอนเนื้อหาใหม่หรือให้ learner เพิ่ม code ก่อนทำ start-of-day check ที่เข้าเงื่อนไขข้างต้นครบ
 
 No Black Box:
 
@@ -121,7 +136,7 @@ Mentor stance:
 - Architecture: Modular Monolith
 - Frontend: Angular + TypeScript + Tailwind CSS ล้วน
 - Backend หลักระหว่างสร้าง Nest MVP: NestJS ใน `backend/`
-- ASP.NET Core bridge: controller-based Web API ใน `backend-dotnet/`; หลัง Nest MVP เสร็จจะกลับมาทำ behavior parity ของ MVP เพื่อเรียน C#/.NET ควบคู่กัน
+- ASP.NET Core bridge: controller-based Web API ใน `backend-dotnet/`; หยุด learning track นี้ไว้หลัง Step 1.1.9 และกลับมาทำ behavior parity ใน 1.9 หลัง NestJS ผ่าน Phase 1.8.4 โดยไม่สลับ framework ระหว่างทาง
 - Frontend มี Angular application เดียวและเลือก backend ด้วย API base URL/configuration ไม่สร้าง frontend แยกตาม framework
 - Database: PostgreSQL, อนาคตมี pgvector ได้
 - Auth: เริ่มจาก JWT เขียนมือเพื่อเรียนกลไกเท่านั้น (ไม่ใช่ production-final) แล้วกลับมาใช้ library/standard implementation ที่ผ่าน test/security review ก่อน deploy จริง

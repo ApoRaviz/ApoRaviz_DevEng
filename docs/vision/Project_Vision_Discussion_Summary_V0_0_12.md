@@ -22,6 +22,13 @@
 
 ### 0.2 Change Log
 
+#### Post-V0.0.12 (10 สิงหาคม 2026) — แยก Backend Learning Track
+
+- คง Step 1.1.9 ASP.NET Core Foundations/Health Lab ที่เรียนจบแล้วและ `backend-dotnet/` ไว้เป็นประวัติ
+- เปลี่ยน Step 1.1.10 เป็น NestJS Middleware & Request Pipeline เท่านั้น แล้วกลับไปเรียน 1.2.1 ต่อเนื่องจนจบ Phase 1.8.4
+- เพิ่ม 1.9 ASP.NET Core MVP Parity หลัง 1.8.4 โดยย้าย ASP.NET Core Middleware ไป 1.9.1; parity step อื่นจะแตกละเอียดตอนเริ่ม 1.9 จาก NestJS MVP ที่เสถียรแล้ว
+- ปรับประมาณการ Phase 1 จาก 46 เป็น 47 Learning Loop เพราะแยก Middleware เดิมเป็น NestJS และ ASP.NET Core คนละบท
+
 #### Post-V0.0.12 (2 สิงหาคม 2026) — Backend Learning Direction + Step 1.1.9 Checkpoint
 
 - DevEng เป็นระบบฝึก production-shaped ที่จะ deploy ให้คนกลุ่มเล็กใช้จริง แต่ไม่ใช่เป้าหมายขายเชิงพาณิชย์
@@ -152,7 +159,7 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 | Frontend | Angular, TypeScript, **Tailwind CSS ล้วน** | Core — เข้าใจทุกบรรทัด |
 | Frontend (เสริม) | UX/UI Design fundamentals | เรียนคู่กับ Tailwind |
 | Backend หลักระหว่างสร้าง Nest MVP | Node.js, NestJS | Core — เข้าใจทุกบรรทัด |
-| Backend Bridge / MVP Parity | C#, .NET, ASP.NET Core | เริ่มจาก Bridge Lab; หลัง Nest MVP เสร็จจึงกลับมาทำ behavior parity ควบคู่กัน |
+| Backend Bridge / MVP Parity | C#, .NET, ASP.NET Core | คง Foundations/Health Lab ที่ทำแล้ว; กลับมาทำ behavior parity ใน 1.9 หลัง NestJS ผ่าน 1.8.4 |
 | Database | PostgreSQL (+ pgvector) | Core — เข้าใจทุกบรรทัด |
 | Auth/Security | JWT (มือก่อน), Passport.js, OAuth2/OIDC, bcrypt/argon2, Refresh token rotation, RBAC | Deep-dive พิเศษ — ฝังใน Phase 1 |
 | Container | Docker, Docker Compose | มาตรฐานอุตสาหกรรม |
@@ -171,7 +178,7 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 
 **หมายเหตุ:** ไม่มี component library (เช่น PrimeNG) ผสมกับ Tailwind — ดูเหตุผลเต็มในข้อ 5
 
-**Backend coexistence decision:** มี Angular frontend เพียงชุดเดียว เลือก NestJS หรือ ASP.NET Core ผ่าน API base URL/configuration; `backend/` และ `backend-dotnet/` เป็น implementation แยก โดย NestJS เป็นเส้นหลักจน Nest MVP เสร็จ
+**Backend coexistence decision:** มี Angular frontend เพียงชุดเดียว เลือก NestJS หรือ ASP.NET Core ผ่าน API base URL/configuration; `backend/` และ `backend-dotnet/` เป็น implementation แยก โดย NestJS เป็น learning track เดียวต่อเนื่องถึง 1.8.4 แล้วจึงกลับมา ASP.NET Core MVP Parity ใน 1.9
 
 ---
 
@@ -312,7 +319,7 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 | 1.1.8 | Backend E2E Test คืออะไร — ใช้ Jest + Supertest เรียก Nest application ผ่าน HTTP, เข้าใจ `test/` และ `jest-e2e.json`, และแยกจาก Unit Test กับ Playwright full E2E |
 | 1.1.9-1 | ASP.NET Core Bridge — Foundations & Scaffold: C#/.NET/ASP.NET Core, SDK/Runtime/Target Framework, `global.json`, `dotnet` CLI, controller-based Web API, File Map, restore/build/run และ HTTP/HTTPS |
 | 1.1.9-2 | ASP.NET Core Bridge — Health API & Tests: ถอด scaffold, ทำ `GET /health`, เพิ่ม test project, `dotnet test` และตรวจ behavior parity ที่จำเป็น; ยังไม่ต่อ DB/Auth |
-| 1.1.10 | Middleware & Request Pipeline Bridge — เทียบ NestJS/ASP.NET Core, ordering, `next`, short-circuit และ safe request logging |
+| 1.1.10 | NestJS Middleware & Request Pipeline — ordering, `next()`, short-circuit, `finish` callback และ safe request logging |
 
 **1.2 Frontend คุยกับ Backend**
 | Step | หัวข้อ |
@@ -386,7 +393,15 @@ MVP = "ห้องเดียวที่สมบูรณ์ ใช้งา
 | 1.8.3 | Reverse Proxy คืออะไร (Nginx/Caddy) |
 | 1.8.4 | Deploy flow หน้าตาเป็นยังไง (build → push → run บน VPS) |
 
-> รวม Phase 1 ทั้งหมดมีประมาณ 46 รอบ Learning Loop ย่อย
+**1.9 ASP.NET Core MVP Parity**
+
+> เริ่มหลัง NestJS MVP ผ่าน 1.8.4 แล้วเท่านั้น รายละเอียด parity ขั้นอื่นจะถูกแตกตอนเริ่ม 1.9 โดยใช้ NestJS MVP ที่เสถียรแล้วเป็น source of truth และใช้ `backend-dotnet/` จาก Step 1.1.9 เป็นฐาน
+
+| Step | หัวข้อ |
+|---|---|
+| 1.9.1 | ASP.NET Core Middleware & Request Pipeline — ทวน concept จาก NestJS แล้วเรียน ordering, `next`, short-circuit และ safe request logging ใน ASP.NET Core |
+
+> รวม Phase 1 ทั้งหมดมีประมาณ 47 รอบ Learning Loop ย่อย โดยนับ 1.9.1 ที่แยกออกจากบท Middleware เดิมแล้ว; จำนวน parity step อื่นอาจปรับเมื่อแตก 1.9 อย่างละเอียด
 
 ### 7.4 Phase 2 Guardrail ก่อนเสียบ AI จริง — เพิ่มใน V0.0.10
 
