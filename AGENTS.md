@@ -44,7 +44,7 @@ teach
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.1.10 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.9 (ASP.NET Core Bridge Lab ทั้ง Part 1 และ Part 2) และ Step 1.1.10 (NestJS Middleware & Request Pipeline) ผ่าน Learning Loop และ final Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.2.1 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.9 (ASP.NET Core Bridge Lab), Step 1.1.10 (NestJS Middleware & Request Pipeline) และ Step 1.2.1 (Angular HttpClient และ HTTP Unit Test) ผ่าน Learning Loop และ final Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
 - global imperative configuration ของ backend มี source of truth เดียวที่ `backend/src/configure-app.ts` (`configureApp(app)`) — `main.ts` เรียกหลัง `NestFactory.create()` ก่อน `listen()` และ E2E เรียกหลัง `createNestApplication()` ก่อน `init()`; ถ้าเพิ่ม global Pipe/Interceptor/Prefix ในอนาคต ให้เพิ่มใน `configureApp()` ไม่ใช่ใน `main.ts` โดยตรง มิฉะนั้น E2E จะไม่เห็น
 - backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนผ่าน `configureApp()` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` (ลงทะเบียนที่เดียว ไม่ซ้ำ) — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
 - backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
@@ -55,7 +55,11 @@ teach
 - NestJS request pipeline: `backend/src/common/middleware/request-logging.middleware.ts` implement `NestMiddleware` — `use()` จดเวลาเริ่มเป็น local variable ต่อ request, ลงทะเบียน `response.on('finish', callback)` **ก่อน** `next()` แล้วอ่าน final `statusCode`/คำนวณ duration ภายใน callback; safe log มีเฉพาะ `method path status durationms` ไม่ log query string, body, header, cookie หรือ token (ใช้ `request.path` ที่ไม่รวม query string)
 - ลงทะเบียนที่ root `AppModule` ผ่าน `implements NestModule` + `configure(consumer)` + `consumer.apply(RequestLoggingMiddleware).forRoutes('*')` จึงครอบทั้ง route ที่พบและไม่พบ (`/health` → 200, `/missing` → custom 404 จาก Exception Filter ก็ถูก log ทั้งคู่); `configure()` hook ของ Module เป็นคนละตัวกับ helper `configureApp(app)`
 - ขอบเขตที่ยังไม่พิสูจน์ด้วย automated test: ไม่มี assertion ต่อ logger — Nest `TestingLogger` ซ่อน `logger.log()` ใน E2E output จึงใช้ E2E PASS อย่างเดียวสรุปว่า logging ทำงานไม่ได้ ต้องใช้ runtime probe หรือ logger/test double
-- Step ถัดไปคือ 1.2.1 HttpClient (Frontend คุยกับ Backend) — เดิน NestJS เป็น learning track เดียวต่อเนื่องจนผ่าน Phase 1.8.4
+- Angular frontend เรียก API ผ่าน Service: `src/app/services/health-api.ts` ใช้ Angular 22 `@Service()` (auto-provided ระดับ root โดย default) + `inject(HttpClient)` และ `getHealth()` คืน `Observable<HealthResponse>` ของ `GET http://localhost:3000/health`; `src/app/app.config.ts` ลงทะเบียน `provideHttpClient()` แล้ว
+- URL ยัง hardcode ไว้โดยตั้งใจ (environment configuration อยู่ Step 1.2.3) และยังไม่มี UI integration/data binding (อยู่ Step 1.2.4)
+- Angular HTTP unit test: `src/app/services/health-api.spec.ts` ใช้ `TestBed` + `provideHttpClient()` แล้วตามด้วย `provideHttpClientTesting()` — Service กับ `HttpClient` เป็นของจริง แต่ testing backend ดัก request ไม่ให้ออก network; ตรวจ URL ด้วย `expectOne()`, ตรวจ method ด้วย assertion, ส่ง response จำลองด้วย `flush()`, เก็บค่าใน `actualResponse` แล้ว `expect()` นอก callback (กัน false positive แบบ tests ผ่านแต่มี Unhandled Error), คุมด้วย `expect.assertions(2)` และ `afterEach` เรียก `verify()`
+- `npm test -- --watch=false` = 2 files / 4 tests (Angular ใช้ Vitest); unit test นี้ไม่ได้พิสูจน์ว่า NestJS เปิดอยู่, network, CORS หรือ end-to-end
+- Step ถัดไปคือ 1.2.2 CORS — เดิน NestJS เป็น learning track เดียวต่อเนื่องจนผ่าน Phase 1.8.4
 
 - 10 สิงหาคม 2026 — backend learning sequence เปลี่ยนเพื่อลด cognitive load: คง Step 1.1.9 และ `backend-dotnet/` ที่ทำเสร็จแล้วไว้เป็นประวัติ, ไม่เพิ่ม ASP.NET Core Middleware ตอนนี้, ปิด 1.1.10 เป็น NestJS-only แล้วไป 1.2.1 ต่อเนื่องด้วย NestJS จนผ่าน 1.8.4; ASP.NET Core Middleware ย้ายไป 1.9.1 ภายใต้ ASP.NET Core MVP Parity และ parity step อื่นจะถูกแตกตอนเริ่ม 1.9 โดยใช้ NestJS MVP ที่เสถียรแล้วเป็น source of truth
 
@@ -105,6 +109,8 @@ Explanation Protocol:
 - ก่อนพูดถึงเทอม B ต้องอธิบายเทอม A ที่ B ยืนอยู่บนนั้นก่อน
 - เริ่มจากภาพจำหรือ analogy ง่าย ๆ ก่อนใส่ technical term
 - ห้ามโยนศัพท์ technical ตรง ๆ โดยไม่ปูพื้น
+- คำว่าเข้าใจง่ายไม่ใช่การตัดศัพท์ technical ที่ใช้จริง: ให้เรียง `ความหมายแบบคนธรรมดา -> ชื่อ technical -> จุดที่เห็นใน code/output` แล้วค่อยลดคำแปลเมื่อ learner คุ้น; ห้ามใช้ศัพท์ใหม่หลายคำอธิบายศัพท์ใหม่อีกคำหนึ่ง
+- เมื่อ flow มีผู้ทำงานหลายตัว ให้แยกของจริง/ของจำลองก่อน ทำแผนที่ว่าใครมีหน้าที่อะไร แล้วตามข้อมูลว่าใครส่งอะไรให้ใคร ก่อนเปิดรายละเอียดภายใน framework; Knowledge Check ต้องใช้ภาษาระดับเดียวกับบทเรียน ไม่วัดการเดาศัพท์
 - ก่อนให้ learner เพิ่ม snippet ใหม่ ให้สำรวจศัพท์, syntax, class, decorator และ API ที่ปรากฏใน snippet; เรื่องที่ยังไม่เคยเรียนต้องอธิบายก่อนให้วาง ส่วนเรื่องที่เคยเรียนแต่จำเป็นต่อ flow ใหม่ให้ทวนสั้น ๆ แบบ just-in-time
 - เมื่อสอน code หนึ่งบรรทัดที่ประกอบด้วยหลายส่วน ให้ใช้วิธี "แยกชิ้นแล้วประกอบกลับ": แสดงบรรทัดเต็มก่อน -> แยกคำหรือส่วนตามหน้าที่ -> อธิบายแต่ละส่วนพร้อมตัวอย่างสั้น -> ประกอบกลับเป็นความหมายและ flow ของทั้งบรรทัด; ไม่แยกทุกคำออกเป็นบทเรียนยาวโดยอัตโนมัติ เว้นแต่ส่วนนั้นเป็นพื้นฐานสำคัญจริงหรือ learner ยังสับสน
 - ถ้า Angular scaffold มีไฟล์เยอะ ให้ recap file map ก่อน Knowledge Check
