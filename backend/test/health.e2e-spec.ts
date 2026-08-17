@@ -25,11 +25,36 @@ describe('HealthController (e2e)', () => {
     await app.init();
   });
 
-  it('/health (GET)', () => {
+  it('/health (GET) allows the Angular origin', () => {
     return request(app.getHttpServer())
       .get('/health')
+      .set('Origin', 'http://localhost:4200')
       .expect(200)
+      .expect('Access-Control-Allow-Origin', 'http://localhost:4200')
       .expect({ status: 'ok' });
+  });
+
+  it('/health (OPTIONS) allows authorization preflight', () => {
+    return request(app.getHttpServer())
+      .options('/health')
+      .set('Origin', 'http://localhost:4200')
+      .set('Access-Control-Request-Method', 'GET')
+      .set('Access-Control-Request-Headers', 'Authorization')
+      .expect(204)
+      .expect('Access-Control-Allow-Origin', 'http://localhost:4200')
+      .expect('Access-Control-Allow-Headers', 'Authorization');
+  });
+
+  it('/health (GET) does not allow another origin', () => {
+    return request(app.getHttpServer())
+      .get('/health')
+      .set('Origin', 'http://localhost:4300')
+      .expect(200)
+      .expect((response) => {
+        expect(response.headers['access-control-allow-origin']).not.toBe(
+          'http://localhost:4300',
+        );
+      });
   });
 
   it('/missing (GET)', () => {
