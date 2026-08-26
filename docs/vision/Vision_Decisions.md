@@ -48,12 +48,14 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 ระหว่าง Learning Loop ถ้ามีความรู้ใหม่ที่ reusable และยังไม่มีใน `ApoRaviz_Workspace_Docs` ให้ทำตาม flow นี้:
 
 1. Codex เขียนร่าง code/docs และ Knowledge Sync หน้างาน
-2. Claude ทำ Independent Review/QA โดยอ่าน changed files และไฟล์ที่เกี่ยวข้องโดยตรง
-3. ถ้า PASS ให้ Claude stamp สถานะใน `AGENTS.md` และ `docs/vision/Roadmap_Progress.md`
-4. Claude ห้าม commit/push
-5. Codex ตรวจ scope แล้ว commit/push ทั้ง `ApoRaviz_DevEng` และ `ApoRaviz_Workspace_Docs`
+2. Codex ทำ Review/QA โดยอ่าน changed files และไฟล์ที่เกี่ยวข้องโดยตรง พร้อมตรวจ scope, technical accuracy และ validation evidence
+3. ถ้า PASS ให้ Codex stamp สถานะใน `AGENTS.md` และ `docs/vision/Roadmap_Progress.md`
+4. Codex commit/push ทั้ง `ApoRaviz_DevEng` และ `ApoRaviz_Workspace_Docs` หลังตรวจ working tree และ diff แล้ว
+5. External second-opinion review เช่น Claude เป็น optional และทำเมื่อผู้ใช้ร้องขอ ไม่ใช่ blocking gate ของทุก Step
 
 Workspace Docs เก็บเฉพาะความรู้ reusable แบบ Thai-first และ topic-first ไม่มี personal context หรือ business rule เฉพาะ DevEng
+
+**Process update — 26 สิงหาคม 2026:** ยกเลิก mandatory Claude review เพื่อไม่ให้การปิด Learning Loop ต้องส่งต่องานข้ามแชท Codex รับผิดชอบ review, QA, stamp, commit และ push ใน flow เดียว โดยยังต้องแสดงหลักฐานและห้ามลดมาตรฐาน validation
 
 ### 2.5 AI ทำหน้าที่ Technical Co-founder + Mentor
 ต้อง challenge ไม่เอาใจ ไม่ยอมรับทางลัดที่ทำให้ไม่เข้าใจจริง
@@ -69,19 +71,22 @@ Workspace Docs เก็บเฉพาะความรู้ reusable แบ�
 ### 2.7 Scope Discipline
 ระหว่างคุย Product Brief พบ pattern ซ้ำหลายครั้ง: ไอเดียเพิ่มเติมที่ฟังดูดี (Admin UI เต็ม, Image/Screenshot capture, Multi-language) ถูกท้วงและแยกออกจาก MVP เพราะไม่ตรงกับ Target User/Problem ที่ระบุไว้ตรงๆ — **หลักการที่ใช้ตัดสินทุกครั้ง: ฟีเจอร์ใหม่ต้องตอบคำถาม "แก้ pain point ที่ระบุไว้แล้วไหม" ก่อนถึงจะพิจารณาเข้า MVP ถ้าไม่ตรง ให้บันทึกเป็น "Future Vision" แยกไว้ แทนที่จะใส่เข้า scope ปัจจุบัน**
 
-### 2.8 Claude/Codex Role Division — LOCKED
+### 2.8 AI Role Division — LOCKED
 
-ใช้ทั้ง 2 subscription ขนานกัน แบ่งบทบาทดังนี้:
+บทบาทปัจจุบันแบ่งดังนี้:
 
 | บทบาท | เครื่องมือ | หน้าที่ |
 |---|---|---|
-| **Designer / Guide** | Claude | ออกแบบ HTML/Architecture, วาง Why + ทิศทางก่อนลงมือ, เป็นคนตั้ง Learning Loop |
-| **Hands-on Tutor / Executor** | Codex | ลงมือเขียนโค้ดคู่กับผู้ใช้ สอนแบบ hands-on ระหว่างทำจริง |
-| **Reviewer / QA** | Claude | ตรวจโค้ดที่ Codex ช่วยเขียน ก่อนถือว่าจบ step |
+| **Product Owner / Learner / Decision Maker** | ผู้ใช้ | เลือกทิศทาง ลงมือในโหมด teach และตัดสินใจเรื่อง scope |
+| **Hands-on Tutor / Executor** | Codex | วาง Why, สอนแบบ hands-on, เขียน artifact, ตรวจ implementation และทำ Knowledge Sync |
+| **Reviewer / QA / Release Operator** | Codex | ตรวจ changed files และหลักฐาน, stamp progress, commit และ push หลัง PASS |
+| **Optional Second Opinion** | Claude หรือ AI อื่น | ตรวจเพิ่มเมื่อผู้ใช้ร้องขอ ไม่ใช่ gate บังคับ |
 
-**เงื่อนไขสำคัญที่ต้องทำทุกครั้ง:** Codex ไม่รู้จัก Explanation Protocol (ข้อ 2.3) และ Learning Loop (ข้อ 2.2) ของเราโดยอัตโนมัติ — ต้องให้ Codex อ่านกติกาเป็น context ทุกครั้งที่เริ่ม session ใหม่ เพื่อให้มาตรฐานการสอนสม่ำเสมอกันทั้งสองตัว (ดูแผน `AGENTS.md` ใน Discussion Summary ฉบับล่าสุด)
+**เงื่อนไขสำคัญที่ต้องทำทุกครั้ง:** Codex ไม่รู้จัก Explanation Protocol (ข้อ 2.3) และ Learning Loop (ข้อ 2.2) โดยอัตโนมัติเมื่อเริ่ม context ใหม่ — ต้องอ่านกติกาตาม Start-of-Session Rule เพื่อรักษามาตรฐานการสอนและ review ให้สม่ำเสมอ
 
 **Working mode update — 27 กรกฎาคม 2026:** ผู้ใช้ = Product Owner / Learner / Decision Maker; Codex = Executor / Hands-on Tutor / Quick Verifier; Claude = Reviewer / QA / Second Brain. `ApoRaviz_DevEng` ใช้ `teach` เป็น Default Working Mode เพื่อเรียนทุกบรรทัดด้วย Learning Loop เต็ม ส่วน `ApoRaviz_*` อื่นใช้ `execute` เป็นหลัก ผู้ใช้ออกไอเดีย/requirement แล้ว AI implement, validate และส่งมอบตาม workspace rules พร้อม capture ความรู้ reusable กลับ `ApoRaviz_Workspace_Docs` เมื่อจำเป็น หลังมี code หรือ artifact แล้ว ผู้ใช้สามารถขอ `walkthrough` เพื่อให้ AI พาไล่อธิบายของเดิมอย่างลึกโดยไม่ให้เขียน implementation ซ้ำ
+
+**Review workflow update — 26 สิงหาคม 2026:** Codex รับบท Reviewer / QA / Release Operator เพิ่มจาก Hands-on Tutor / Executor และ Claude เปลี่ยนเป็น optional second opinion ตามคำขอของผู้ใช้ ประวัติ Step เก่าที่ Claude เคย review ยังคงไว้ตามจริงและไม่ย้อนแก้
 
 ---
 

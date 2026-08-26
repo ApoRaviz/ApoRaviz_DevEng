@@ -43,8 +43,8 @@ teach
 - Angular Router พร้อม SSR/server rendering scaffold
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
-- UI ยังเป็น Angular starter template เป็นหลัก
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.2.3 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.1.9 (ASP.NET Core Bridge Lab), Step 1.1.10 (NestJS Middleware & Request Pipeline), Step 1.2.1 (Angular HttpClient และ HTTP Unit Test), Step 1.2.2 (CORS) และ Step 1.2.3 (Angular Environment Config) ผ่าน Learning Loop และ final Independent Review/QA (Claude) ตามกติกา 2.4 แล้ว
+- Angular starter template ถูกแทนด้วย health status card แล้ว: มี semantic `<main>/<section>`, Tailwind utility classes, responsive-width card, visual hierarchy, interactive states และ status feedback ที่ไม่ใช้สีอย่างเดียว
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.2.4 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.2.4 Data Binding ผ่าน Learning Loop และ Codex Review/QA ตามกติกา 2.4 ฉบับวันที่ 26 สิงหาคม 2026 แล้ว
 - global imperative configuration ของ backend มี source of truth เดียวที่ `backend/src/configure-app.ts` (`configureApp(app)`) — `main.ts` เรียกหลัง `NestFactory.create()` ก่อน `listen()` และ E2E เรียกหลัง `createNestApplication()` ก่อน `init()`; ถ้าเพิ่ม global Pipe/Interceptor/Prefix ในอนาคต ให้เพิ่มใน `configureApp()` ไม่ใช่ใน `main.ts` โดยตรง มิฉะนั้น E2E จะไม่เห็น
 - backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนผ่าน `configureApp()` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` (ลงทะเบียนที่เดียว ไม่ซ้ำ) — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
 - backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
@@ -61,14 +61,14 @@ teach
 - configuration flow ของ scaffold นี้: `ng serve` = development (`serve.defaultConfiguration`), `npm run build` = production (`build.defaultConfiguration`), `npm test` = **development** เพราะ `@angular/build:unit-test` ใช้ `buildTarget` default เป็น `::development` (ยืนยันจาก `node_modules/@angular/build/src/builders/unit-test/schema.json` และ `src/builders/unit-test/options.js`) — target `test` ใน `angular.json` จึงไม่ต้องมี `fileReplacements` ของตัวเอง และห้ามสรุปว่า Unit Test ใช้ base production file เพียงเพราะ target `test` ไม่มี `fileReplacements` เขียนอยู่ข้างใน
 - Environment ฝั่ง frontend เป็น **build-time public configuration** ที่ถูก bundle ไปอยู่ใน JavaScript ฝั่ง browser ได้ ไม่ใช่ secret store — ห้ามใส่ password/token/credential จริง
 - ขอบเขตหลักฐาน (1): spec สร้าง expected URL จาก `environment.apiBaseUrl` เหมือนกับ Service จึงพิสูจน์ได้แค่ว่า Service ประกอบ `base + /health` ตาม Environment ของ configuration ที่กำลังรัน ไม่ได้พิสูจน์ว่า base URL ของ production ถูกต้อง; ถ้า hardcode `http://localhost:3000` ไว้ใน Service test ก็ยังผ่านเพราะพฤติกรรมเท่ากับค่า development
-- ขอบเขตหลักฐาน (2): "build ผ่านแต่ค้นข้อความ URL ใน bundle ไม่พบ" **ไม่ได้แปลว่า `fileReplacements` เสีย** — `HealthApi` ยังไม่มีผู้เรียกใน application จึงถูก tree shaking ตัดออก (ตรวจ dev build จริงแล้วไม่พบทั้ง `localhost:3000` และ `api.example.invalid` ใน bundle) การพิสูจน์ค่าใน browser ต้องรอให้มี flow ที่ใช้ Service จริงใน Step 1.2.4
-- ยังไม่มี UI integration/data binding (อยู่ Step 1.2.4) และรอบนี้ไม่แตะ NestJS environment config, CORS, browser integration หรือ network call
+- ขอบเขตหลักฐาน (2): Step 1.2.4 เชื่อม `App` → `HealthApi` แล้ว จึงไม่ถูก tree shaking ตัดออกจาก application flow อีกต่อไป; browser runtime จาก Angular development origin พิสูจน์ `GET /health` จริงผ่าน CORS ไป NestJS และแสดง `Backend status: ok` ได้ ส่วน production API domain/deployment ยังไม่ได้พิสูจน์
+- Angular UI state แยกเป็น `idle | loading | success | error` ผ่าน Signal; `checkHealth()` ล้าง response เก่า ตั้ง loading แล้วใช้ `subscribe({ next, error })` เก็บ response/เปลี่ยน state; Template ใช้ `(click)`, `[disabled]`, interpolation, optional chaining และ `@switch` พร้อม `aria-live="polite"`
 - Angular HTTP unit test: `src/app/services/health-api.spec.ts` ใช้ `TestBed` + `provideHttpClient()` แล้วตามด้วย `provideHttpClientTesting()` — Service กับ `HttpClient` เป็นของจริง แต่ testing backend ดัก request ไม่ให้ออก network; ตรวจ URL ด้วย `expectOne()`, ตรวจ method ด้วย assertion, ส่ง response จำลองด้วย `flush()`, เก็บค่าใน `actualResponse` แล้ว `expect()` นอก callback (กัน false positive แบบ tests ผ่านแต่มี Unhandled Error), คุมด้วย `expect.assertions(2)` และ `afterEach` เรียก `verify()`
-- `npm test -- --watch=false` = 2 files / 4 tests (Angular ใช้ Vitest); unit test นี้ไม่ได้พิสูจน์ว่า NestJS เปิดอยู่, network, CORS หรือ end-to-end
+- Angular Component Test ใช้ `provideHttpClientTesting()` + `HttpTestingController` ตรวจ idle/loading/success/error DOM flow; `app.spec.ts` = 4 tests และ full Angular suite = 2 files / 6 tests โดย Unit Test ไม่พิสูจน์ NestJS/network/CORS จึงมี browser runtime probe แยกทั้ง backend เปิด (success) และปิด (network error)
 - CORS เปิดผ่าน `configureApp()` ด้วย `app.enableCors({ origin: 'http://localhost:4200' })` ที่เดียว (ไม่กระจาย configuration ซ้ำใน `main.ts`) จึงทำให้ runtime และ E2E ใช้ config เดียวกัน; อนุญาต Angular development origin `http://localhost:4200`
 - nuance ที่ต้องจำ: `origin` เป็น string คงที่บน Express ทำให้ response ส่ง `Access-Control-Allow-Origin: http://localhost:4200` เสมอ แม้ request จะมาจาก origin อื่น — **browser** เป็นผู้เทียบแล้วปิดกั้น ไม่ใช่ server ปฏิเสธ request; `curl`/Supertest จึงยังเห็น status/body ตามปกติและไม่ได้พิสูจน์การบังคับใช้ของ browser
 - CORS ไม่ได้ทำหน้าที่แทน Authentication/Authorization และ `Access-Control-Allow-Methods` ที่ preflight ตอบ (ค่า default `GET,HEAD,PUT,PATCH,POST,DELETE`) ไม่ได้ยืนยันว่า route จริงรองรับทุก method นั้น
-- Step ถัดไปคือ 1.2.4 Data Binding — แสดงผลจาก Backend บน UI (แทรก UI/UX fundamentals) โดยเดิน NestJS เป็น learning track เดียวต่อเนื่องจนผ่าน Phase 1.8.4
+- Step ถัดไปคือ 1.3.1 PostgreSQL คืออะไรและรันผ่าน Docker ครั้งแรก โดยเดิน NestJS เป็น learning track เดียวต่อเนื่องจนผ่าน Phase 1.8.4
 
 - 10 สิงหาคม 2026 — backend learning sequence เปลี่ยนเพื่อลด cognitive load: คง Step 1.1.9 และ `backend-dotnet/` ที่ทำเสร็จแล้วไว้เป็นประวัติ, ไม่เพิ่ม ASP.NET Core Middleware ตอนนี้, ปิด 1.1.10 เป็น NestJS-only แล้วไป 1.2.1 ต่อเนื่องด้วย NestJS จนผ่าน 1.8.4; ASP.NET Core Middleware ย้ายไป 1.9.1 ภายใต้ ASP.NET Core MVP Parity และ parity step อื่นจะถูกแตกตอนเริ่ม 1.9 โดยใช้ NestJS MVP ที่เสถียรแล้วเป็น source of truth
 
@@ -198,10 +198,10 @@ Design-first principle:
 Mandatory Knowledge Sync:
 
 1. Codex เขียนร่าง code/docs และ Knowledge Sync หน้างาน
-2. Claude ทำ Independent Review/QA โดยอ่าน changed files และไฟล์ที่เกี่ยวข้องโดยตรง
-3. ถ้า PASS ให้ Claude stamp สถานะใน `AGENTS.md` และ `docs/vision/Roadmap_Progress.md`
-4. Claude ห้าม commit/push
-5. Codex ตรวจ scope แล้ว commit/push ทั้ง `ApoRaviz_DevEng` และ `ApoRaviz_Workspace_Docs`
+2. Codex ทำ Review/QA โดยอ่าน changed files และไฟล์ที่เกี่ยวข้องโดยตรง พร้อมตรวจ scope, technical accuracy และ validation evidence
+3. ถ้า PASS ให้ Codex stamp สถานะใน `AGENTS.md` และ `docs/vision/Roadmap_Progress.md`
+4. Codex ตรวจ working tree/diff แล้ว commit/push ทั้ง `ApoRaviz_DevEng` และ `ApoRaviz_Workspace_Docs`
+5. External second-opinion review เช่น Claude ใช้เมื่อผู้ใช้ร้องขอ ไม่ใช่ blocking gate
 
 ตัวอย่างที่ควรกลับไป `../ApoRaviz_Workspace_Docs`:
 
@@ -280,13 +280,13 @@ npm test -- --watch=false
 
 ## Codex And Claude Collaboration
 
-ไฟล์นี้ตั้งใจให้ Codex กับ Claude เขียนร่วมกันได้
+ไฟล์นี้ตั้งใจให้ AI agents ที่ได้รับมอบหมายเขียนร่วมกันได้
 
 บทบาทที่ lock แล้ว:
 
-- Claude = Designer / Guide: วาง Why, architecture, HTML/design direction, และตั้ง Learning Loop
-- Codex = Hands-on Tutor / Executor: ลงมือเขียน code คู่กับผู้ใช้ สอนระหว่างทำจริง และถาม Knowledge Check ระหว่างทาง
-- Claude = Reviewer / QA: ตรวจ code ที่ Codex ช่วยเขียน และตรวจ Knowledge Sync ก่อนปิด step
+- ผู้ใช้ = Product Owner / Learner / Decision Maker
+- Codex = Hands-on Tutor / Executor / Reviewer / QA / Release Operator: วาง Why, สอนและทำงานคู่กับผู้ใช้, ตรวจ code/docs, stamp, commit และ push
+- Claude หรือ AI อื่น = Optional Second Opinion เมื่อผู้ใช้ร้องขอ
 
 กติกาส่งต่องาน:
 
@@ -296,7 +296,7 @@ npm test -- --watch=false
 - ถ้าแก้ไฟล์นี้ ให้เก็บเป็นกติกาที่ใช้ซ้ำจริง ไม่ใช่บันทึก chat เฉพาะครั้ง
 - ถ้ามี decision สำคัญ ให้ย้ายไป `README.md`, `docs/`, source documents, หรือ `../ApoRaviz_Workspace_Docs` ตามขอบเขตของเนื้อหา
 
-ทั้งสองตัวควรยึด source of truth เดียวกันจากไฟล์นี้, source documents, และ `../ApoRaviz_Workspace_Docs`
+ทุก agent ควรยึด source of truth เดียวกันจากไฟล์นี้, source documents, และ `../ApoRaviz_Workspace_Docs`
 
 ## Documentation Updates
 

@@ -118,11 +118,15 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 ### 2.3 Explanation Protocol
 ก่อนพูดถึงเทอม B ต้องนิยามเทอม A ที่ B ยืนอยู่บนนั้นก่อนเสมอ — เริ่มจากภาพจำ/analogy ง่ายๆ ก่อนใส่ technical term
 
-### 2.4 Mandatory Knowledge Sync — ปรับ V0.0.12
+### 2.4 Mandatory Knowledge Sync — ปรับ workflow 26 สิงหาคม 2026
 
 ระหว่าง Learning Loop ถ้า AI ประเมินว่าเนื้อหาควรค่าแก่การจดจำ:
 1. **Codex เป็นคนเขียนร่างบันทึกเข้า ApoRaviz_Workspace_Docs ทันทีหน้างาน** (อยู่ใน session ที่ความเข้าใจเกิดขึ้นจริง)
-2. **Claude (บทบาท Reviewer/QA ตามข้อ 2.8) ต้องตรวจทานบันทึกนั้นก่อนถือว่า sync เสร็จสมบูรณ์** — เพราะ Codex ไม่เห็นบทสนทนาที่ Claude เคยสอนมาก่อน (คนละ session/เครื่องมือ) มีความเสี่ยงจดเพี้ยนได้ถ้าไม่มีใครตรวจซ้ำ
+2. **Codex ทำ Review/QA changed files และไฟล์ที่เกี่ยวข้องโดยตรง** ตรวจ scope, technical accuracy, Knowledge Sync และ validation evidence ก่อนถือว่า sync เสร็จ
+3. เมื่อ PASS ให้ Codex stamp progress แล้ว commit/push ทั้ง project repo และ Workspace Docs
+4. Claude หรือ AI อื่นเป็น optional second opinion เมื่อผู้ใช้ร้องขอ ไม่ใช่ gate บังคับ
+
+การเปลี่ยน workflow นี้ไม่ลดมาตรฐาน validation แต่ลดการส่งต่องานข้ามแชทและทำให้ owner ของ implementation รับผิดชอบการปิด loop ให้ครบในที่เดียว ประวัติ Step เก่าที่ Claude เคยตรวจยังคงไว้ตามจริง
 
 ### 2.5 AI ทำหน้าที่ Technical Co-founder + Mentor
 ต้อง challenge ไม่เอาใจ ไม่ยอมรับทางลัดที่ทำให้ไม่เข้าใจจริง
@@ -138,17 +142,18 @@ GitHub Org: https://github.com/ApoRaviz มี 5 repo:
 ### 2.7 Scope Discipline — ⭐ หลักการแฝงที่เห็นชัดในเซสชันนี้ (V0.0.5)
 ระหว่างคุย Product Brief พบ pattern ซ้ำหลายครั้ง: ไอเดียเพิ่มเติมที่ฟังดูดี (Admin UI เต็ม, Image/Screenshot capture, Multi-language) ถูกท้วงและแยกออกจาก MVP เพราะไม่ตรงกับ Target User/Problem ที่ระบุไว้ตรงๆ — **หลักการที่ใช้ตัดสินทุกครั้ง: ฟีเจอร์ใหม่ต้องตอบคำถาม "แก้ pain point ที่ระบุไว้แล้วไหม" ก่อนถึงจะพิจารณาเข้า MVP ถ้าไม่ตรง ให้บันทึกเป็น "Future Vision" แยกไว้ แทนที่จะใส่เข้า scope ปัจจุบัน**
 
-### 2.8 Claude/Codex Role Division — ⭐ LOCKED (V0.0.8, ปรับ V0.0.12)
+### 2.8 AI Role Division — ⭐ LOCKED (ปรับ 26 สิงหาคม 2026)
 
-ใช้ทั้ง 2 subscription ขนานกัน แบ่งบทบาทดังนี้:
+แบ่งบทบาทดังนี้:
 
 | บทบาท | เครื่องมือ | หน้าที่ |
 |---|---|---|
-| **Designer / Guide** | Claude | ออกแบบ HTML/Architecture, วาง Why + ทิศทางก่อนลงมือ, เป็นคนตั้ง Learning Loop |
-| **Hands-on Tutor / Executor** | Codex | ลงมือเขียนโค้ดคู่กับผู้ใช้ สอนแบบ hands-on ระหว่างทำจริง **+ ถามทวนความเข้าใจ (Knowledge Check ตามข้อ 2.2) ระหว่างทาง ไม่ใช่ปล่อยให้เขียนโค้ดเสร็จเฉยๆ โดยไม่เช็คว่าเข้าใจจริง** |
-| **Reviewer / QA** | Claude | ตรวจโค้ดที่ Codex ช่วยเขียน + ตรวจบันทึก Knowledge Sync (ข้อ 2.4) ก่อนถือว่าจบ step |
+| **Product Owner / Learner / Decision Maker** | ผู้ใช้ | เลือกทิศทาง ลงมือในโหมด teach และตัดสินใจเรื่อง scope |
+| **Hands-on Tutor / Executor** | Codex | วาง Why, ลงมือเขียนโค้ดคู่กับผู้ใช้ และถามทวนความเข้าใจระหว่างทาง |
+| **Reviewer / QA / Release Operator** | Codex | ตรวจ implementation/docs/evidence, stamp progress, commit และ push หลัง PASS |
+| **Optional Second Opinion** | Claude หรือ AI อื่น | ตรวจเพิ่มเมื่อผู้ใช้ร้องขอ ไม่ใช่ gate บังคับ |
 
-**เงื่อนไขสำคัญที่ต้องทำทุกครั้ง:** Codex ไม่รู้จัก Explanation Protocol (ข้อ 2.3) และ Learning Loop (ข้อ 2.2) ของเราโดยอัตโนมัติ — ถ้ายังไม่มี `AGENTS.md` ให้ **แปะไฟล์สรุปนี้อย่างน้อยข้อ 2** ให้ Codex อ่านเป็น context ทุกครั้งที่เริ่ม session ใหม่กับ Codex; หลังจากสร้าง `AGENTS.md` แล้ว ให้ใช้ `AGENTS.md` เป็น context หลักแทน เพื่อให้มาตรฐานการสอนสม่ำเสมอกันทั้งสองตัว ไม่ใช่ปล่อยให้ Codex สอนแบบโยน technical term ตรงๆ โดยไม่ build จาก analogy ก่อน
+**เงื่อนไขสำคัญที่ต้องทำทุกครั้ง:** Codex ไม่รู้จัก Explanation Protocol (ข้อ 2.3) และ Learning Loop (ข้อ 2.2) โดยอัตโนมัติเมื่อเริ่ม context ใหม่ ให้ใช้ `AGENTS.md` และ `TEACHING_RULES.md` ตาม Start-of-Session Rule เพื่อไม่ให้มาตรฐานการสอนและ review ลดลง
 
 ---
 
@@ -534,6 +539,7 @@ DevEng ไม่ใช่ผลิตภัณฑ์เป้าหมายส�
 | 23 | Mandatory Knowledge Sync ใครเขียน/ใครตรวจ ระหว่าง Claude-Codex | ✅ LOCKED (V0.0.12) — Codex เขียนร่างหน้างาน → Claude (Reviewer/QA) ตรวจทานก่อนถือว่า sync เสร็จ ดูข้อ 2.4 |
 | 24 | Pace/Pressure context ของผู้ใช้ — เวลาเป็นเพดานตายตัวไหม ยอมให้กดดันได้ไหม | ✅ LOCKED (V0.0.12) — เวลา 3+ ชม./วันขึ้นไป ไม่ใช่เพดาน, ยอมรับการกดดันได้ถ้าจำเป็นต่อการเรียนรู้จริง (ดู `AGENTS.md` ข้อ 10) |
 | 25 | Cross-reference เวอร์ชันตกหล่นหลัง bump V0.0.12 (หัวข้อ 0.3, 0.2, 10 ยังอ้าง V0.0.10/11 เดิม) | ✅ LOCKED (V0.0.12) — แก้ครบตามรอบตรวจทานนี้แล้ว |
+| 26 | ต้องส่ง Claude review ทุก Step ต่อไปหรือไม่ | ✅ LOCKED (26 สิงหาคม 2026) — ไม่บังคับแล้ว; Codex ทำ Review/QA, stamp, commit และ push ใน flow เดียว ส่วน Claude/AI อื่นเป็น optional second opinion ดูข้อ 2.4 และ 2.8 |
 
 ---
 
