@@ -44,7 +44,9 @@ teach
 - package manager: npm
 - Node.js default ของ workspace: Node 24+
 - Angular starter template ถูกแทนด้วย health status card แล้ว: มี semantic `<main>/<section>`, Tailwind utility classes, responsive-width card, visual hierarchy, interactive states และ status feedback ที่ไม่ใช้สีอย่างเดียว
-- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.2.4 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.2.4 Data Binding ผ่าน Learning Loop และ Codex Review/QA ตามกติกา 2.4 ฉบับวันที่ 26 สิงหาคม 2026 แล้ว
+- Phase 0 จบครบแล้ว และ Phase 1 เดินถึง Step 1.3.1 ตาม `docs/vision/Roadmap_Progress.md` — Step 1.3.1 PostgreSQL ผ่าน Docker ครั้งแรกผ่าน Learning Loop และ Codex Review/QA ตามกติกา 2.4 ฉบับวันที่ 9 กันยายน 2026 แล้ว
+- local PostgreSQL ใช้ standalone container `aporaviz-deveng-postgres` จาก image `postgres:17-alpine`, named volume `aporaviz-deveng-postgres-data` และ port mapping `127.0.0.1:5433 -> 5432`; learner พิสูจน์ named-volume persistence ด้วยการ remove/recreate container แล้ว query row เดิมได้, เปลี่ยน role password ผ่าน `ALTER ROLE` และ reconnect ด้วย pgAdmin สำเร็จ; ตาราง probe ถูก drop แล้ว
+- Step 1.3.1 ยังไม่เพิ่ม `compose.yaml`, ORM, migration หรือ NestJS database integration — Docker Compose อยู่ Phase 1.4 และ Step ถัดไปคือ 1.3.2 ORM
 - global imperative configuration ของ backend มี source of truth เดียวที่ `backend/src/configure-app.ts` (`configureApp(app)`) — `main.ts` เรียกหลัง `NestFactory.create()` ก่อน `listen()` และ E2E เรียกหลัง `createNestApplication()` ก่อน `init()`; ถ้าเพิ่ม global Pipe/Interceptor/Prefix ในอนาคต ให้เพิ่มใน `configureApp()` ไม่ใช่ใน `main.ts` โดยตรง มิฉะนั้น E2E จะไม่เห็น
 - backend มี Global Exception Filter ตัวแรกที่ `backend/src/common/filters/http-exception.filter.ts` ลงทะเบียนผ่าน `configureApp()` ด้วย `app.useGlobalFilters(new HttpExceptionFilter())` (ลงทะเบียนที่เดียว ไม่ซ้ำ) — จับเฉพาะตระกูล `HttpException` ส่วน unknown `Error` ยังตกกับ Nest default handler เป็น generic 500 (ยังไม่ทำ catch-all และ `APP_FILTER` ยัง deferred)
 - backend unit test: `npm test -- --runInBand` = 2 suites / 3 tests — `health.service.spec.ts` มี behavioral assertion จริง (`expect(service.getHealth()).toEqual({ status: 'ok' })`) ส่วน `health.controller.spec.ts` ยังเป็น existence test เท่านั้นและยังใช้ `HealthService` จริงใน Testing Module (Controller-level behavioral test/mock ยังไม่ได้ทำ)
@@ -68,7 +70,7 @@ teach
 - CORS เปิดผ่าน `configureApp()` ด้วย `app.enableCors({ origin: 'http://localhost:4200' })` ที่เดียว (ไม่กระจาย configuration ซ้ำใน `main.ts`) จึงทำให้ runtime และ E2E ใช้ config เดียวกัน; อนุญาต Angular development origin `http://localhost:4200`
 - nuance ที่ต้องจำ: `origin` เป็น string คงที่บน Express ทำให้ response ส่ง `Access-Control-Allow-Origin: http://localhost:4200` เสมอ แม้ request จะมาจาก origin อื่น — **browser** เป็นผู้เทียบแล้วปิดกั้น ไม่ใช่ server ปฏิเสธ request; `curl`/Supertest จึงยังเห็น status/body ตามปกติและไม่ได้พิสูจน์การบังคับใช้ของ browser
 - CORS ไม่ได้ทำหน้าที่แทน Authentication/Authorization และ `Access-Control-Allow-Methods` ที่ preflight ตอบ (ค่า default `GET,HEAD,PUT,PATCH,POST,DELETE`) ไม่ได้ยืนยันว่า route จริงรองรับทุก method นั้น
-- Step ถัดไปคือ 1.3.1 PostgreSQL คืออะไรและรันผ่าน Docker ครั้งแรก โดยเดิน NestJS เป็น learning track เดียวต่อเนื่องจนผ่าน Phase 1.8.4
+- Step ถัดไปคือ 1.3.2 ORM คืออะไรและทำไมไม่เขียน SQL ตรงทุกที่ โดยเดิน NestJS เป็น learning track เดียวต่อเนื่องจนผ่าน Phase 1.8.4
 
 - 10 สิงหาคม 2026 — backend learning sequence เปลี่ยนเพื่อลด cognitive load: คง Step 1.1.9 และ `backend-dotnet/` ที่ทำเสร็จแล้วไว้เป็นประวัติ, ไม่เพิ่ม ASP.NET Core Middleware ตอนนี้, ปิด 1.1.10 เป็น NestJS-only แล้วไป 1.2.1 ต่อเนื่องด้วย NestJS จนผ่าน 1.8.4; ASP.NET Core Middleware ย้ายไป 1.9.1 ภายใต้ ASP.NET Core MVP Parity และ parity step อื่นจะถูกแตกตอนเริ่ม 1.9 โดยใช้ NestJS MVP ที่เสถียรแล้วเป็น source of truth
 
